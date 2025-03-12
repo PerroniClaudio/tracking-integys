@@ -10,6 +10,9 @@ class TrackedEvents extends Model {
     protected $fillable = [
         'event_code',
         'ip_address',
+        'ip_country',
+        'ip_city',
+        'ip_zip',
         'user_agent',
         'referer',
         'url',

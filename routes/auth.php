@@ -9,6 +9,10 @@ Route::get('/auth/redirect', function () {
     return Socialite::driver('microsoft')->redirect();
 })->name('auth.microsoft');
 
+Route::get('/login', function () {
+    return Socialite::driver('microsoft')->redirect();
+})->name('login');
+
 Route::get('/auth/microsoft/callback', function () {
     $user = Socialite::driver('microsoft')->user();
 

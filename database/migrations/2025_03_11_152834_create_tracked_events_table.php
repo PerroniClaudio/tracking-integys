@@ -13,6 +13,9 @@ return new class extends Migration {
             $table->id();
             $table->string('event_code');
             $table->string('ip_address');
+            $table->string('ip_country');
+            $table->string('ip_city');
+            $table->string('ip_zip');
             $table->string('user_agent');
             $table->string('referer')->nullable();
             $table->string('url');
