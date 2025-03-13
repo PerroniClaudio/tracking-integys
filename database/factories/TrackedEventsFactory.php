@@ -25,6 +25,23 @@ class TrackedEventsFactory extends Factory {
         "BTN-INT-5",
     ];
 
+    // Indirizzi IP italiani comuni (classi di rete realistiche)
+    private $ip_prefixes = [
+        '62.94.',      // Telecom Italia
+        '151.55.',     // Wind Tre
+        '79.12.',      // Fastweb
+        '93.63.',      // Vodafone
+        '80.104.',     // TIM
+        '5.170.',      // Tiscali
+        '185.27.',     // Reti aziendali italiane
+        '212.171.',    // Operatori regionali
+    ];
+
+    // Utilizziamo variabili statiche per condividere i dati tra tutte le istanze
+    private static $ip_addresses = [];
+    private static $session_codes = [];
+    private static $user_sessions = []; // Mappa sessione => IP per coerenza
+    private static $initialized = false;
 
     /**
      * Define the model's default state.
@@ -32,6 +49,15 @@ class TrackedEventsFactory extends Factory {
      * @return array<string, mixed>
      */
     public function definition(): array {
+        // Generiamo i dati realistici se non ancora inizializzati
+        if (!self::$initialized) {
+            $this->generateRealisticData();
+            self::$initialized = true;
+        }
+
+        // Scegli una sessione casuale
+        $session_id = $this->faker->randomElement(self::$session_codes);
+        $session_data = self::$user_sessions[$session_id];
 
         $event = $this->faker->randomElement(['PAGE_VIEW', 'ARTICLE_VIEW', 'DID_PRESS_BUTTON']);
 
@@ -48,14 +74,19 @@ class TrackedEventsFactory extends Factory {
         }
 
         return [
-            //
-            'event_code' => $this->faker->randomElement(['PAGE_VIEW', 'ARTICLE_VIEW', 'DID_PRESS_BUTTON']),
-            'ip_address' => $this->faker->ipv4,
+            'event_code' => $event,
+            'ip_address' => $session_data['ip'],
             'ip_country' => "Italy",
-            'ip_city' => $this->faker->city,
-            'ip_zip' => $this->faker->postcode,
-            'user_agent' => $this->faker->userAgent,
-            'referer' => $this->faker->url,
+            'ip_city' => $session_data['city'],
+            'ip_zip' => $session_data['zip'],
+            'user_agent' => $session_data['user_agent'],
+            'referer' => $this->faker->randomElement([
+                "search_engine",
+                "social_network",
+                "direct_traffic",
+                "referral",
+                "email"
+            ]),
             'url' => $url,
             'scroll_percentage' => $this->faker->numberBetween(0, 100),
             'utm_source' => $this->faker->word,
@@ -66,7 +97,32 @@ class TrackedEventsFactory extends Factory {
             'element_id' => $element_id,
             'custom_get_params' => "{}",
             'custom_post_params' => "{}",
-            'session_id' => $this->faker->uuid,
+            'session_id' => $session_id,
+            'created_at' => $this->faker->dateTimeBetween('-3 month', 'now'),
         ];
+    }
+
+    /**
+     * Genera dati realistici per le sessioni utente
+     */
+    private function generateRealisticData() {
+        // Generazione di 100 sessioni uniche
+        for ($i = 0; $i < 100; $i++) {
+            $session_id = $this->faker->uuid;
+            self::$session_codes[] = $session_id;
+
+            // Assegna un indirizzo IP realistico per l'Italia a questa sessione
+            $ip_prefix = $this->faker->randomElement($this->ip_prefixes);
+            $ip = $ip_prefix . $this->faker->numberBetween(1, 254) . '.' . $this->faker->numberBetween(1, 254);
+            self::$ip_addresses[] = $ip;
+
+            // Associa la sessione all'IP (un utente mantiene lo stesso IP durante una sessione)
+            self::$user_sessions[$session_id] = [
+                'ip' => $ip,
+                'user_agent' => $this->faker->userAgent,
+                'city' => $this->faker->city,
+                'zip' => $this->faker->postcode
+            ];
+        }
     }
 }

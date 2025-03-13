@@ -6,105 +6,177 @@ import { SankeyController, Flow } from "chartjs-chart-sankey";
 // Registra il controller e il tipo di elemento necessari
 Chart.register(SankeyController, Flow);
 
-(async () => {
-    const today = new Date();
-    const data = Array.from({ length: 7 }, (_, i) => {
-        const date = new Date(today);
-        date.setDate(today.getDate() - i);
-        return {
-            year: date.toISOString().split("T")[0],
-            count: Math.floor(Math.random() * 100),
-        };
-    }).reverse();
+const csrf_token = document
+    .querySelector('meta[name="csrf-token"]')
+    .getAttribute("content");
 
-    new Chart(document.getElementById("andamento"), {
-        type: "line",
-        data: {
-            labels: data.map((row) => row.year),
-            datasets: [
-                {
-                    data: data.map((row) => row.count),
-                    fill: true,
-                    borderColor: "rgba(118, 115, 143, 1)",
-                    backgroundColor: "rgba(118, 115, 143, 0.4)",
-                },
-            ],
+(async () => {
+    fetch("/stats/visits?precision=fullyear", {
+        headers: {
+            "X-CSRF-TOKEN": csrf_token,
+            Accept: "application/json",
         },
-        options: {
-            plugins: {
-                legend: {
-                    display: false,
+        credentials: "same-origin", // Invia i cookie di sessione con la richiesta
+    })
+        .then((response) => response.json())
+        .then((data) => {
+            new Chart(document.getElementById("andamento"), {
+                type: "line",
+                data: {
+                    labels: data.map((row) => row.date),
+                    datasets: [
+                        {
+                            data: data.map((row) => row.visits),
+                            fill: true,
+                            borderColor: "rgba(118, 115, 143, 1)",
+                            backgroundColor: "rgba(118, 115, 143, 0.4)",
+                        },
+                    ],
                 },
-            },
-        },
-    });
+                options: {
+                    plugins: {
+                        legend: {
+                            display: false,
+                        },
+                    },
+                },
+            });
+        });
 })();
 
 (async () => {
-    const graphCanvasId = "provenienza";
+    fetch("/stats/referers?precision=fullyear", {
+        headers: {
+            "X-CSRF-TOKEN": csrf_token,
+            Accept: "application/json",
+        },
+        credentials: "same-origin", // Invia i cookie di sessione con la richiesta
+    })
+        .then((response) => response.json())
+        .then((datasource) => {
+            const graphCanvasId = "provenienza";
 
-    const data = {
-        datasets: [
-            {
-                data: [12, 19, 3, 5, 8],
-                backgroundColor: [
-                    "rgba(255, 99, 132, 0.2)",
-                    "rgba(54, 162, 235, 0.2)",
-                    "rgba(255, 206, 86, 0.2)",
-                    "rgba(75, 192, 192, 0.2)",
-                    "rgba(153, 102, 255, 0.2)",
-                ],
-                borderColor: [
-                    "rgba(255, 99, 132, 1)",
-                    "rgba(54, 162, 235, 1)",
-                    "rgba(255, 206, 86, 1)",
-                    "rgba(75, 192, 192, 1)",
-                    "rgba(153, 102, 255, 1)",
-                ],
-                borderWidth: 1,
-            },
-        ],
-    };
+            console.log(datasource);
 
-    new Chart(document.getElementById(graphCanvasId), {
-        type: "pie",
-        data: data,
-    });
+            const sources = [
+                "direct_traffic",
+                "search_engine",
+                "social_network",
+                "referral",
+                "email",
+            ];
+
+            const sourcesLabels = [
+                "Organico",
+                "Diretto",
+                "Social",
+                "Referral",
+                "Email",
+            ];
+
+            const data = {
+                labels: sourcesLabels,
+                datasets: [
+                    {
+                        data: sources.map(
+                            (source) =>
+                                datasource.find(
+                                    (element) => element.source === source
+                                ).value
+                        ),
+                        backgroundColor: [
+                            "rgba(255, 99, 132, 0.2)",
+                            "rgba(54, 162, 235, 0.2)",
+                            "rgba(255, 206, 86, 0.2)",
+                            "rgba(75, 192, 192, 0.2)",
+                            "rgba(153, 102, 255, 0.2)",
+                        ],
+                        borderColor: [
+                            "rgba(255, 99, 132, 1)",
+                            "rgba(54, 162, 235, 1)",
+                            "rgba(255, 206, 86, 1)",
+                            "rgba(75, 192, 192, 1)",
+                            "rgba(153, 102, 255, 1)",
+                        ],
+                        borderWidth: 1,
+                    },
+                ],
+            };
+
+            new Chart(document.getElementById(graphCanvasId), {
+                type: "pie",
+                data: data,
+                options: {
+                    plugins: {
+                        legend: {
+                            display: false,
+                        },
+                    },
+                },
+            });
+        });
 })();
 
 (async () => {
-    const graphCanvasId = "piuvisitate";
-
-    const data = {
-        labels: ["Home", "About", "Services", "Contact", "Blog"],
-        datasets: [
-            {
-                data: [150, 100, 200, 80, 120],
-                backgroundColor: "rgba(118, 115, 143, 0.4)",
-                borderColor: "rgba(118, 115, 143, 1)",
-                borderWidth: 1,
-            },
-        ],
-    };
-
-    new Chart(document.getElementById(graphCanvasId), {
-        type: "bar",
-        data: data,
-        options: {
-            indexAxis: "y",
-            scales: {
-                x: {
-                    beginAtZero: true,
-                },
-            },
-
-            plugins: {
-                legend: {
-                    display: false,
-                },
-            },
+    fetch("/stats/most-visited?precision=fullyear", {
+        headers: {
+            "X-CSRF-TOKEN": csrf_token,
+            Accept: "application/json",
         },
-    });
+        credentials: "same-origin", // Invia i cookie di sessione con la richiesta
+    })
+        .then((response) => response.json())
+        .then((datasource) => {
+            const graphCanvasId = "piuvisitate";
+
+            datasource.sort((a, b) => b.value - a.value);
+
+            let labels = datasource.map((row) => {
+                if (row.url != "https://news.integys.com") {
+                    row.url = row.url.replace(
+                        "https://news.integys.com/news/",
+                        ""
+                    );
+                }
+
+                if (row.url.length > 30) {
+                    row.url = row.url.substring(0, 30) + "...";
+                }
+
+                return row.url;
+            });
+
+            const data = {
+                labels: labels,
+                datasets: [
+                    {
+                        data: datasource.map((row) => row.value),
+                        backgroundColor: "rgba(118, 115, 143, 0.4)",
+                        borderColor: "rgba(118, 115, 143, 1)",
+                        borderWidth: 1,
+                    },
+                ],
+            };
+
+            new Chart(document.getElementById(graphCanvasId), {
+                type: "bar",
+                data: data,
+                options: {
+                    indexAxis: "y",
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                        },
+                    },
+
+                    plugins: {
+                        legend: {
+                            display: false,
+                        },
+                    },
+                },
+            });
+        });
 })();
 
 (async () => {

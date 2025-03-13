@@ -22,6 +22,9 @@ class WebhookController extends Controller {
             case "ARTICLE_VIEW":
                 dispatch(new RegisterArticleViewEvent($request->all()));
                 break;
+            case "DID_VISIT_FORM":
+                dispatch(new RegisterPageViewEvent($request->all()));
+                break;
             case "SCROLL_UPDATE":
                 dispatch(new RegisterScrollUpdate($request->all()));
                 break;

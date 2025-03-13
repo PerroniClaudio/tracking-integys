@@ -1,4 +1,5 @@
 <x-layouts.app>
+
     <div class="border-b border-base-200 pb-8 px-4">
         <div class="container mx-auto px-4 flex items-center justify-between ">
             <div>
@@ -28,19 +29,19 @@
                     <div class="card card-border">
                         <div class="card-body">
                             <h4 class="text-lg">Visite totali</h4>
-                            <p>15.487</p>
+                            <p>{{ $total_visits }}</p>
                         </div>
                     </div>
                     <div class="card card-border">
                         <div class="card-body">
                             <h4 class="text-lg">Utenti unici</h4>
-                            <p>9.253</p>
+                            <p>{{ $unique_users }}</p>
                         </div>
                     </div>
                     <div class="card card-border">
                         <div class="card-body">
                             <h4 class="text-lg">Visite per pagina</h4>
-                            <p>2.5</p>
+                            <p>{{ $average_page_view }}</p>
                         </div>
                     </div>
                     <div class="card card-border">
