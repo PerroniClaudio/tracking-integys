@@ -1,6 +1,7 @@
 import Chart from "chart.js/auto";
 import { SankeyController, Flow } from "chartjs-chart-sankey";
 import axios from "axios";
+import DismissableAlert from "./dismissable-alert";
 
 // Registra il controller e il tipo di elemento necessari
 Chart.register(SankeyController, Flow);
@@ -15,13 +16,40 @@ dateFilter.addEventListener("change", (event) => {
     window.location.href = `/home?precision=${precision}`;
 });
 
+const customDateFilterButton = document.querySelector("#custom-date-filter");
+customDateFilterButton.addEventListener("click", customDateFilter);
+
+function customDateFilter() {
+    const startDate = document.querySelector("#start_date").value;
+    const endDate = document.querySelector("#end_date").value;
+    let errorBox = new DismissableAlert("choose-date-modal-error-box");
+
+    if (new Date(endDate) <= new Date(startDate)) {
+        errorBox.setErrorMessage(
+            "La data di fine deve essere successiva alla data di inizio."
+        );
+        errorBox.show();
+
+        return;
+    }
+
+    window.location.href = `/home?precision=custom&start_date=${startDate}&end_date=${endDate}`;
+}
+
 const csrf_token = document
     .querySelector('meta[name="csrf-token"]')
     .getAttribute("content");
 
 (async () => {
+    let visitsUrl =
+        precision == "custom"
+            ? `/stats/visits?precision=${precision}&start_date=${urlParams.get(
+                  "start_date"
+              )}&end_date=${urlParams.get("end_date")}`
+            : `/stats/visits?precision=${precision}`;
+
     axios
-        .get(`/stats/visits?precision=${precision}`, {
+        .get(visitsUrl, {
             headers: {
                 "X-CSRF-TOKEN": csrf_token,
                 Accept: "application/json",
@@ -55,8 +83,15 @@ const csrf_token = document
 })();
 
 (async () => {
+    let referersUrl =
+        precision == "custom"
+            ? `/stats/referers?precision=${precision}&start_date=${urlParams.get(
+                  "start_date"
+              )}&end_date=${urlParams.get("end_date")}`
+            : `/stats/referers?precision=${precision}`;
+
     axios
-        .get(`/stats/referers?precision=${precision}`, {
+        .get(referersUrl, {
             headers: {
                 "X-CSRF-TOKEN": csrf_token,
                 Accept: "application/json",
@@ -66,8 +101,6 @@ const csrf_token = document
         .then((response) => {
             const datasource = response.data;
             const graphCanvasId = "provenienza";
-
-            console.log(datasource);
 
             const sources = [
                 "direct_traffic",
@@ -87,14 +120,11 @@ const csrf_token = document
 
             let sourceData = sources.map((source) => {
                 datasource.forEach((row) => {
-                    console.log(row);
                     if (row.source === source) {
                         return row.value;
                     }
                 });
             });
-
-            console.log(sourceData);
 
             const data = {
                 labels: sourcesLabels,
@@ -135,6 +165,13 @@ const csrf_token = document
 })();
 
 (async () => {
+    let mostVisitedUrl =
+        precision == "custom"
+            ? `/stats/most-visited?precision=${precision}&start_date=${urlParams.get(
+                  "start_date"
+              )}&end_date=${urlParams.get("end_date")}`
+            : `/stats/most-visited?precision=${precision}`;
+
     const urlSources = [
         "https://news.integys.com/",
         "https://news.integys.com/news/",
@@ -143,7 +180,7 @@ const csrf_token = document
     ];
 
     axios
-        .get(`/stats/most-visited?precision=${precision}`, {
+        .get(mostVisitedUrl, {
             headers: {
                 "X-CSRF-TOKEN": csrf_token,
                 Accept: "application/json",

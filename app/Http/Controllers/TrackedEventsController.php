@@ -56,10 +56,14 @@ class TrackedEventsController extends Controller {
                     ]);
                     break;
                 case "custom":
+
+                    $start_date = Carbon::createFromFormat('Y-m-d', $request->start_date);
+                    $end_date = Carbon::createFromFormat('Y-m-d', $request->end_date);
+
                     return view('home', [
-                        'total_visits' => $this->getTotalVisits($request->start_date, $request->end_date),
-                        'unique_users' => $this->getUniqueUsers($request->start_date, $request->end_date),
-                        'average_page_view' => $this->calculateAveragePageView($request->start_date, $request->end_date),
+                        'total_visits' => $this->getTotalVisits($start_date, $end_date),
+                        'unique_users' => $this->getUniqueUsers($start_date, $end_date),
+                        'average_page_view' => $this->calculateAveragePageView($start_date, $end_date),
                         'precision' => $request->precision
                     ]);
                     break;
