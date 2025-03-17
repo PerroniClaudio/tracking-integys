@@ -1,5 +1,7 @@
 <x-layouts.app>
 
+    @vite('resources/js/homepage.js')
+
     <div class="border-b border-base-200 pb-8 px-4">
         <div class="container mx-auto px-4 flex items-center justify-between ">
             <div>
@@ -10,11 +12,13 @@
                     <div class="btn btn-primary rounded-l">
                         <x-lucide-calendar class="h-6 w-6 text-primary-content" />
                     </div>
-                    <select class="select select-md rounded-r">
-                        <option disabled selected>Oggi</option>
-                        <option>Ultimi 7 giorni</option>
-                        <option>Mese corrente</option>
-                        <option>Ultimi 6 mesi</option>
+                    <select class="select select-md rounded-r" id="dateRange">
+                        <option value="today" {{ $precision == 'today' ? 'selected' : '' }}>Oggi</option>
+                        <option value="week" {{ $precision == 'week' ? 'selected' : '' }}>Ultimi 7 giorni</option>
+                        <option value="month" {{ $precision == 'month' ? 'selected' : '' }}>Mese corrente</option>
+                        <option value="sixmonths" {{ $precision == 'sixmonths' ? 'selected' : '' }}>Ultimi 6 mesi
+                        </option>
+                        <option value="fullyear" {{ $precision == 'fullyear' ? 'selected' : '' }}>Ultimo anno</option>
                     </select>
                 </div>
             </div>

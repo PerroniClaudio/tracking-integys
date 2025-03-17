@@ -10,14 +10,76 @@ class TrackedEventsController extends Controller {
     /**
      * Display a listing of the resource.
      */
-    public function index() {
+    public function index(Request $request) {
         //
 
-        return view('home', [
-            'total_visits' => $this->getTotalVisits(Carbon::now()->subtract('3 month'), Carbon::now()),
-            'unique_users' => $this->getUniqueUsers(Carbon::now()->subtract('3 month'), Carbon::now()),
-            'average_page_view' => $this->calculateAveragePageView(Carbon::now()->subtract('3 month'), Carbon::now())
-        ]);
+        if (isset($request->precision)) {
+            switch ($request->precision) {
+                case "today":
+                    return view('home', [
+                        'total_visits' => $this->getTotalVisits(Carbon::now()->startOfDay(), Carbon::now()->endOfDay()),
+                        'unique_users' => $this->getUniqueUsers(Carbon::now()->startOfDay(), Carbon::now()->endOfDay()),
+                        'average_page_view' => $this->calculateAveragePageView(Carbon::now()->startOfDay(), Carbon::now()->endOfDay()),
+                        'precision' => $request->precision
+                    ]);
+                    break;
+                case "week":
+                    return view('home', [
+                        'total_visits' => $this->getTotalVisits(Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()),
+                        'unique_users' => $this->getUniqueUsers(Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()),
+                        'average_page_view' => $this->calculateAveragePageView(Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()),
+                        'precision' => $request->precision
+                    ]);
+                    break;
+                case "month":
+                    return view('home', [
+                        'total_visits' => $this->getTotalVisits(Carbon::now()->startOfMonth(), Carbon::now()->endOfMonth()),
+                        'unique_users' => $this->getUniqueUsers(Carbon::now()->startOfMonth(), Carbon::now()->endOfMonth()),
+                        'average_page_view' => $this->calculateAveragePageView(Carbon::now()->startOfMonth(), Carbon::now()->endOfMonth()),
+                        'precision' => $request->precision
+                    ]);
+                    break;
+                case "sixmonths":
+                    return view('home', [
+                        'total_visits' => $this->getTotalVisits(Carbon::now()->startOfMonth()->subMonths(6), Carbon::now()->endOfMonth()),
+                        'unique_users' => $this->getUniqueUsers(Carbon::now()->startOfMonth()->subMonths(6), Carbon::now()->endOfMonth()),
+                        'average_page_view' => $this->calculateAveragePageView(Carbon::now()->startOfMonth()->subMonths(6), Carbon::now()->endOfMonth()),
+                        'precision' => $request->precision
+                    ]);
+                    break;
+                case "fullyear":
+                    return view('home', [
+                        'total_visits' => $this->getTotalVisits(Carbon::now()->startOfYear(), Carbon::now()->endOfYear()),
+                        'unique_users' => $this->getUniqueUsers(Carbon::now()->startOfYear(), Carbon::now()->endOfYear()),
+                        'average_page_view' => $this->calculateAveragePageView(Carbon::now()->startOfYear(), Carbon::now()->endOfYear()),
+                        'precision' => $request->precision
+                    ]);
+                    break;
+                case "custom":
+                    return view('home', [
+                        'total_visits' => $this->getTotalVisits($request->start_date, $request->end_date),
+                        'unique_users' => $this->getUniqueUsers($request->start_date, $request->end_date),
+                        'average_page_view' => $this->calculateAveragePageView($request->start_date, $request->end_date),
+                        'precision' => $request->precision
+                    ]);
+                    break;
+                default:
+                    return view('home', [
+                        'total_visits' => $this->getTotalVisits(Carbon::now()->startOfDay(), Carbon::now()->endOfDay()),
+                        'unique_users' => $this->getUniqueUsers(Carbon::now()->startOfDay(), Carbon::now()->endOfDay()),
+                        'average_page_view' => $this->calculateAveragePageView(Carbon::now()->startOfDay(), Carbon::now()->endOfDay()),
+                        'precision' => "today"
+                    ]);
+                    break;
+            }
+        } else {
+            return view('home', [
+                'total_visits' => $this->getTotalVisits(Carbon::now()->startOfDay(), Carbon::now()->endOfDay()),
+                'unique_users' => $this->getUniqueUsers(Carbon::now()->startOfDay(), Carbon::now()->endOfDay()),
+                'average_page_view' => $this->calculateAveragePageView(Carbon::now()->startOfDay(), Carbon::now()->endOfDay()),
+                'precision' => "today"
+            ]);
+        }
     }
 
     /**
@@ -108,6 +170,10 @@ class TrackedEventsController extends Controller {
             ->distinct('ip_address', 'session_id')
             ->get()
             ->count();
+
+        if ($unique_users === 0) {
+            return 0;
+        }
 
         return $total_page_views / $unique_users;
     }
