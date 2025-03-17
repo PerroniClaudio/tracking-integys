@@ -16,7 +16,7 @@
 </head>
 
 <body class="antialiased font-sans">
-    <main class="flex flex-col items-center justify-center gap-1 h-[100vh] max-w-7xl">
+    <main class="flex flex-col items-center justify-center gap-1 h-[100vh]">
         <div class="card card-dash bg-base-200 w-96">
             <div class="card-body">
                 <h2 class="card-title">Accedi</h2>

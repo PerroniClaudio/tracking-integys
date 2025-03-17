@@ -37,6 +37,14 @@ class WebhookController extends Controller {
             case "DID_REGISTRATION_COMPLETE":
                 dispatch(new RegisterRegistrationComplete($request->all()));
                 break;
+            case "TEST":
+                return response()->json(['message' => 'Webhook received', "data" => $request->all()], 200);
+                break;
+            default:
+                return response()->json(['message' => 'Invalid webhook event'], 400);
+                break;
         }
+
+        return response()->json(['message' => 'Webhook received'], 200);
     }
 }

@@ -9,6 +9,7 @@ use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class RegisterPageViewEvent implements ShouldQueue {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
@@ -25,6 +26,11 @@ class RegisterPageViewEvent implements ShouldQueue {
     }
 
     private function getCountry($ip_address) {
+
+        if ($ip_address == '127.0.0.1' || $ip_address == '::1') {
+            return "Unknown";
+        }
+
         $response = Http::get("http://ip-api.com/json/{$ip_address}", [
             "fields" => "status,message,country,countryCode,region,regionName,city,district,zip,lat,lon,timezone,isp,org,as,query"
         ]);
@@ -44,8 +50,9 @@ class RegisterPageViewEvent implements ShouldQueue {
 
         $payload = $this->payload;
         $response = $this->getCountry($payload['ip_address']);
-
         if ($response != "Unknown") {
+
+
             TrackedEvents::create([
                 "event_code" => "PAGE_VIEW",
                 "ip_address" => $payload['ip_address'],
