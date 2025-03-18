@@ -36,7 +36,7 @@
             <ul class="menu bg-base-100 text-base-content min-h-full w-80 p-4 border-r border-base-200">
                 <!-- Sidebar content here -->
                 <li>
-                    <a href="#">
+                    <a href="{{ route('home') }}">
                         <div class="flex items-center">
                             <x-lucide-home class="h-6 w-6 text-primary" />
                             <span class="ml-2">{{ __('navbar.home') }}</span>
@@ -44,7 +44,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="{{ route('website-visits') }}">
                         <div class="flex items-center">
                             <x-lucide-bar-chart-3 class="h-6 w-6 text-primary" />
                             <span class="ml-2">{{ __('navbar.website_visits') }}</span>
@@ -71,4 +71,5 @@
         </div>
     </div>
 
+    @stack('scripts')
 </body>

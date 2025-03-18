@@ -86,47 +86,24 @@ class TrackedEventsController extends Controller {
         }
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create() {
-        //
+    public function websiteVisits(Request $request) {
+
+        $different_domains = TrackedEvents::select('url')->distinct()->get();
+        $domain_list = [];
+
+        foreach ($different_domains as $domain) {
+            if (!in_array($domain->domain(), $domain_list)) {
+                $domain_list[] = $domain->domain();
+            }
+        }
+
+        return view('website-visits', [
+            'domain' => $request->domain ?? $domain_list[0],
+            'domain_list' => $domain_list,
+            'precision' => $request->precision ?? "today"
+        ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request) {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(TrackedEvents $trackedEvents) {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(TrackedEvents $trackedEvents) {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, TrackedEvents $trackedEvents) {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(TrackedEvents $trackedEvents) {
-        //
-    }
 
     private function getTotalVisits(Carbon $start_date, Carbon $end_date) {
 
@@ -148,8 +125,9 @@ class TrackedEventsController extends Controller {
                 "PAGE_VIEW",
                 "ARTICLE_VIEW"
             ])
-            ->select('ip_address', 'session_id')
-            ->distinct()
+            ->groupBy('ip_address', 'session_id')
+            ->orderBy('created_at')
+            ->get()
             ->count();
         return $uniqueUsersCount;
     }
@@ -204,6 +182,7 @@ class TrackedEventsController extends Controller {
     public function visits(Request $request) {
 
         $visits = [];
+        $domain = $request->domain ?? "";
 
         switch ($request->precision) {
             case "today":
@@ -214,6 +193,7 @@ class TrackedEventsController extends Controller {
                         "PAGE_VIEW",
                         "ARTICLE_VIEW"
                     ])
+                    ->where('url', 'like', '%' . $domain . '%')
                     ->orderBy('created_at')
                     ->get();
 
@@ -236,6 +216,7 @@ class TrackedEventsController extends Controller {
                         "PAGE_VIEW",
                         "ARTICLE_VIEW"
                     ])
+                    ->where('url', 'like', '%' . $domain . '%')
                     ->orderBy('created_at')
                     ->get();
 
@@ -257,6 +238,7 @@ class TrackedEventsController extends Controller {
                         "PAGE_VIEW",
                         "ARTICLE_VIEW"
                     ])
+                    ->where('url', 'like', '%' . $domain . '%')
                     ->orderBy('created_at')
                     ->get();
 
@@ -278,6 +260,7 @@ class TrackedEventsController extends Controller {
                         "PAGE_VIEW",
                         "ARTICLE_VIEW"
                     ])
+                    ->where('url', 'like', '%' . $domain . '%')
                     ->orderBy('created_at')
                     ->get();
 
@@ -299,6 +282,7 @@ class TrackedEventsController extends Controller {
                         "PAGE_VIEW",
                         "ARTICLE_VIEW"
                     ])
+                    ->where('url', 'like', '%' . $domain . '%')
                     ->orderBy('created_at')
                     ->get();
 
@@ -324,6 +308,212 @@ class TrackedEventsController extends Controller {
                         "PAGE_VIEW",
                         "ARTICLE_VIEW"
                     ])
+                    ->where('url', 'like', '%' . $domain . '%')
+                    ->orderBy('created_at')
+                    ->get();
+
+                $diff = $start_date_carbon->diffInDays($end_date_carbon);
+
+                if ($diff === 0) {
+                    $visits = $events->groupBy(function ($event) {
+                        return $event->created_at->format('H');
+                    })->map(function ($group) {
+                        return [
+                            'date' => $group->first()->created_at->format('H'),
+                            'visits' => $group->count()
+                        ];
+                    });
+                } else if ($diff <= 7) {
+                    $visits = $events->groupBy(function ($event) {
+                        return $event->created_at->format('d/m');
+                    })->map(function ($group) {
+                        return [
+                            'date' => $group->first()->created_at->format('d/m'),
+                            'visits' => $group->count()
+                        ];
+                    });
+                } else if ($diff <= 30) {
+                    $visits = $events->groupBy(function ($event) {
+                        return $event->created_at->format('d/m');
+                    })->map(function ($group) {
+                        return [
+                            'date' => $group->first()->created_at->format('d/m'),
+                            'visits' => $group->count()
+                        ];
+                    });
+                } else if ($diff <= 180) {
+                    $visits = $events->groupBy(function ($event) {
+                        return $event->created_at->format('m/Y');
+                    })->map(function ($group) {
+                        return [
+                            'date' => $group->first()->created_at->format('m/Y'),
+                            'visits' => $group->count()
+                        ];
+                    });
+                } else {
+                    $visits = $events->groupBy(function ($event) {
+                        return $event->created_at->format('F');
+                    })->map(function ($group) {
+                        return [
+                            'date' => ucfirst($group->first()->created_at->locale('it_IT')->monthName),
+                            'visits' => $group->count()
+                        ];
+                    });
+                }
+
+                break;
+            default:
+
+                response()->json([
+                    'message' => 'Scegli una precision tra: today, week, month, sixmonths, fullyear, custom'
+                ]);
+
+                break;
+        }
+
+        $visits = $visits->values()->all();
+
+
+        return response()->json($visits);
+    }
+
+    public function getUniqueUsersDomain(Request $request) {
+        $visits = [];
+        $domain = $request->domain ?? "";
+
+        switch ($request->precision) {
+            case "today":
+
+                $events = TrackedEvents::where('created_at', '>=', Carbon::now()->startOfDay())
+                    ->where('created_at', '<=', Carbon::now()->endOfDay())
+                    ->whereIn('event_code', [
+                        "PAGE_VIEW",
+                        "ARTICLE_VIEW"
+                    ])
+                    ->where('url', 'like', '%' . $domain . '%')
+                    ->groupBy('ip_address', 'session_id')
+                    ->orderBy('created_at')
+                    ->get();
+
+                $visits = $events->groupBy(function ($event) {
+                    return $event->created_at->format('H');
+                })->map(function ($group) {
+                    return [
+                        'date' => $group->first()->created_at->format('H'),
+                        'visits' => $group->count()
+                    ];
+                });
+
+
+                break;
+            case "week":
+
+                $events = TrackedEvents::where('created_at', '>=', Carbon::now()->startOfWeek())
+                    ->where('created_at', '<=', Carbon::now()->endOfWeek())
+                    ->whereIn('event_code', [
+                        "PAGE_VIEW",
+                        "ARTICLE_VIEW"
+                    ])
+                    ->where('url', 'like', '%' . $domain . '%')
+                    ->groupBy('ip_address', 'session_id')
+                    ->orderBy('created_at')
+                    ->get();
+
+                $visits = $events->groupBy(function ($event) {
+                    return $event->created_at->format('d/m');
+                })->map(function ($group) {
+                    return [
+                        'date' => $group->first()->created_at->format('d/m'),
+                        'visits' => $group->count()
+                    ];
+                });
+
+                break;
+            case "month":
+
+                $events = TrackedEvents::where('created_at', '>=', Carbon::now()->startOfMonth())
+                    ->where('created_at', '<=', Carbon::now()->endOfMonth())
+                    ->whereIn('event_code', [
+                        "PAGE_VIEW",
+                        "ARTICLE_VIEW"
+                    ])
+                    ->where('url', 'like', '%' . $domain . '%')
+                    ->groupBy('ip_address', 'session_id')
+                    ->orderBy('created_at')
+                    ->get();
+
+                $visits = $events->groupBy(function ($event) {
+                    return $event->created_at->format('d/m');
+                })->map(function ($group) {
+                    return [
+                        'date' => $group->first()->created_at->format('d/m'),
+                        'visits' => $group->count()
+                    ];
+                });
+
+                break;
+            case "sixmonths":
+
+                $events = TrackedEvents::where('created_at', '>=', Carbon::now()->startOfMonth()->subMonths(6))
+                    ->where('created_at', '<=', Carbon::now()->endOfMonth())
+                    ->whereIn('event_code', [
+                        "PAGE_VIEW",
+                        "ARTICLE_VIEW"
+                    ])
+                    ->where('url', 'like', '%' . $domain . '%')
+                    ->groupBy('ip_address', 'session_id')
+                    ->orderBy('created_at')
+                    ->get();
+
+                $visits = $events->groupBy(function ($event) {
+                    return $event->created_at->format('m/Y');
+                })->map(function ($group) {
+                    return [
+                        'date' => $group->first()->created_at->format('m/Y'),
+                        'visits' => $group->count()
+                    ];
+                });
+
+                break;
+            case "fullyear":
+
+                $events = TrackedEvents::where('created_at', '>=', Carbon::now()->startOfYear())
+                    ->where('created_at', '<=', Carbon::now()->endOfYear())
+                    ->whereIn('event_code', [
+                        "PAGE_VIEW",
+                        "ARTICLE_VIEW"
+                    ])
+                    ->where('url', 'like', '%' . $domain . '%')
+                    ->groupBy('ip_address', 'session_id')
+                    ->orderBy('created_at')
+                    ->get();
+
+
+
+                $visits = $events->groupBy(function ($event) {
+                    return $event->created_at->format('F');
+                })->map(function ($group) {
+                    return [
+                        'date' => ucfirst($group->first()->created_at->locale('it_IT')->monthName),
+                        'visits' => $group->count()
+                    ];
+                });
+
+
+                break;
+            case "custom":
+
+                $start_date_carbon = Carbon::createFromFormat('Y-m-d', $request->start_date);
+                $end_date_carbon = Carbon::createFromFormat('Y-m-d', $request->end_date);
+
+                $events = TrackedEvents::where('created_at', '>=', $request->start_date)
+                    ->where('created_at', '<=', $request->end_date)
+                    ->whereIn('event_code', [
+                        "PAGE_VIEW",
+                        "ARTICLE_VIEW"
+                    ])
+                    ->where('url', 'like', '%' . $domain . '%')
+                    ->groupBy('ip_address', 'session_id')
                     ->orderBy('created_at')
                     ->get();
 
@@ -531,6 +721,8 @@ class TrackedEventsController extends Controller {
     }
 
     public function mostVisited(Request $request) {
+        $domain = $request->domain ?? "";
+
         switch ($request->precision) {
             case "today":
 
@@ -540,6 +732,7 @@ class TrackedEventsController extends Controller {
                         "PAGE_VIEW",
                         "ARTICLE_VIEW"
                     ])
+                    ->where('url', 'like', '%' . $domain . '%')
                     ->orderBy('created_at')
                     ->get();
 
@@ -559,6 +752,7 @@ class TrackedEventsController extends Controller {
                         "PAGE_VIEW",
                         "ARTICLE_VIEW"
                     ])
+                    ->where('url', 'like', '%' . $domain . '%')
                     ->orderBy('created_at')
                     ->get();
 
@@ -578,6 +772,7 @@ class TrackedEventsController extends Controller {
                         "PAGE_VIEW",
                         "ARTICLE_VIEW"
                     ])
+                    ->where('url', 'like', '%' . $domain . '%')
                     ->orderBy('created_at')
                     ->get();
 
@@ -597,6 +792,7 @@ class TrackedEventsController extends Controller {
                         "PAGE_VIEW",
                         "ARTICLE_VIEW"
                     ])
+                    ->where('url', 'like', '%' . $domain . '%')
                     ->orderBy('created_at')
                     ->get();
 
@@ -618,6 +814,7 @@ class TrackedEventsController extends Controller {
                         "PAGE_VIEW",
                         "ARTICLE_VIEW"
                     ])
+                    ->where('url', 'like', '%' . $domain . '%')
                     ->orderBy('created_at')
                     ->get();
 
@@ -637,6 +834,7 @@ class TrackedEventsController extends Controller {
                         "PAGE_VIEW",
                         "ARTICLE_VIEW"
                     ])
+                    ->where('url', 'like', '%' . $domain . '%')
                     ->orderBy('created_at')
                     ->get();
 
@@ -661,5 +859,18 @@ class TrackedEventsController extends Controller {
         $mostVisited = $mostVisited->values()->all();
 
         return response()->json($mostVisited);
+    }
+
+    public function test() {
+        $uniqueUsersCount = TrackedEvents::where('created_at', '>=', Carbon::now()->startOfMonth()->subMonths(6))
+            ->where('created_at', '<=', Carbon::now()->endOfMonth())
+            ->whereIn('event_code', [
+                "PAGE_VIEW",
+                "ARTICLE_VIEW"
+            ])
+            ->groupBy('ip_address', 'session_id')
+            ->orderBy('created_at');
+
+        dd($uniqueUsersCount->get());
     }
 }

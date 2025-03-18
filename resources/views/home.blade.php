@@ -1,7 +1,4 @@
 <x-layouts.app>
-
-
-
     <div class="border-b border-base-200 pb-8 px-4">
         <div class="container mx-auto px-4 flex items-center justify-between ">
             <div>
@@ -126,14 +123,6 @@
                 <input type="date" class="input input-bordered" id="end_date" value="{{ $end_date ?? '' }}">
             </div>
 
-            {{-- <div class="alert alert-error hidden cursor-pointer justify-between items-center my-2"
-                id="error_message_container">
-                <p id="error_message" class="error-content text-xs">
-
-                </p>
-                <x-lucide-x class="h-4 w-4 text-error-content" id="error_icon" />
-            </div> --}}
-
             <x-dismissable-alert type="error" id="choose-date-modal-error-box" message="" />
 
             <div class="flex justify-end gap-2 mt-4">
@@ -142,5 +131,7 @@
         </div>
     </dialog>
 
-    @vite('resources/js/homepage.js')
+    @push('scripts')
+        @vite('resources/js/homepage.js')
+    @endpush
 </x-layouts.app>

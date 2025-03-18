@@ -31,4 +31,15 @@ class TrackedEvents extends Model {
         'custom_post_params',
         'session_id',
     ];
+
+    public function domain() {
+
+        $url = $this->url;
+
+        $matches = [];
+        if (preg_match('/^(https?:\/\/[^\/]+)/i', $url, $matches)) {
+            return $matches[1];
+        }
+        return $url; // Ritorna l'URL originale se non riesce a estrarre il dominio
+    }
 }

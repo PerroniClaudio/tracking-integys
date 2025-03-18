@@ -15,6 +15,17 @@ class TrackedEventsFactory extends Factory {
         "https://news.integys.com/news/la-sicurezza-informatica-negli-enti-locali-sfide-e-strategie-nell-era-digitale",
         "https://news.integys.com/news/l-importanza-delle-competenze-digitali-nell-era-della-cybersecurity",
         "https://news.integys.com/news/crimini-informatici-analisi-prevenzione-e-compliance-integrata-e-collaborativa-dpo-e-odv",
+        "https://www.dpodelcomune.com/laffidamento-negli-enti-locali-spunti",
+        "https://www.dpodelcomune.com/crimini-informatici-analisi-prevenzione-compliance",
+        "https://www.dpodelcomune.com/sistema-gestione-della-privacy-gdpr",
+        "https://www.dpodelcomune.com/rafforzare-resilienza-informatica-limpatto-della",
+        "https://www.dpodelcomune.com/comprendere-rischi-legati-alla-violazione"
+    ];
+
+    private $websites = [
+        "https://news.integys.com",
+        "https://integys.com",
+        "https://www.dpodelcomune.com/"
     ];
 
     private $buttons = [
@@ -64,7 +75,7 @@ class TrackedEventsFactory extends Factory {
         if ($event === "ARTICLE_VIEW") {
             $url = $this->faker->randomElement($this->articles);
         } else {
-            $url = "https://news.integys.com";
+            $url = $this->faker->randomElement($this->websites);
         }
 
         if ($event === "DID_PRESS_BUTTON") {
