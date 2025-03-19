@@ -5,12 +5,44 @@ const websiteSelector = document.getElementById("websites");
 const precisionSelector = document.getElementById("dateRange");
 const urlParams = new URLSearchParams(window.location.search);
 
-let website = urlParams.get("website") || websiteSelector.value;
+let website = urlParams.get("domain") || websiteSelector.value;
 let precision = urlParams.get("precision") || precisionSelector.value;
 
 const csrf_token = document
     .querySelector('meta[name="csrf-token"]')
     .getAttribute("content");
+
+precisionSelector.addEventListener("change", (event) => {
+    precision = event.target.value;
+
+    window.location.href = `/website-visits?precision=${precision}&domain=${website}`;
+});
+
+websiteSelector.addEventListener("change", (event) => {
+    website = event.target.value;
+
+    window.location.href = `/website-visits?precision=${precision}&domain=${website}`;
+});
+
+const customDateFilterButton = document.querySelector("#custom-date-filter");
+customDateFilterButton.addEventListener("click", customDateFilter);
+
+function customDateFilter() {
+    const startDate = document.querySelector("#start_date").value;
+    const endDate = document.querySelector("#end_date").value;
+    let errorBox = new DismissableAlert("choose-date-modal-error-box");
+
+    if (new Date(endDate) <= new Date(startDate)) {
+        errorBox.setErrorMessage(
+            "La data di fine deve essere successiva alla data di inizio."
+        );
+        errorBox.show();
+
+        return;
+    }
+
+    window.location.href = `/website-visits?precision=custom&start_date=${startDate}&end_date=${endDate}&domain=${website}`;
+}
 
 (async () => {
     let mostVisitedUrl =

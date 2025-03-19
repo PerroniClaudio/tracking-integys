@@ -5,7 +5,7 @@
                 <h1 class="text-4xl">{{ __('navbar.website_visits') }}</h1>
             </div>
             <div class="flex flex-col lg:flex-row gap-2">
-                <div class="join w-full">
+                <div class="join">
                     <div class="btn btn-primary rounded-l">
                         <x-lucide-globe class="h-6 w-6 text-primary-content" />
                     </div>
@@ -131,6 +131,26 @@
             </div>
         </div>
     </div>
+
+    <dialog id="choose_date_modal" class="modal">
+        <div class="modal-box">
+            <form method="dialog">
+                <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+            </form>
+            <h3 class="text-lg font-bold">Seleziona date</h3>
+
+            <div class="grid grid-cols-2 gap-2">
+                <input type="date" class="input input-bordered" id="start_date" value="{{ $start_date ?? '' }}">
+                <input type="date" class="input input-bordered" id="end_date" value="{{ $end_date ?? '' }}">
+            </div>
+
+            <x-dismissable-alert type="error" id="choose-date-modal-error-box" message="" />
+
+            <div class="flex justify-end gap-2 mt-4">
+                <button class="btn btn-primary" id="custom-date-filter">Filtra</button>
+            </div>
+        </div>
+    </dialog>
 
     @push('scripts')
         @vite('resources/js/webvisits.js')
