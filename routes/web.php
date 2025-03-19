@@ -17,8 +17,11 @@ Route::group([
 ], function () {
     Route::get('/visits', [TrackedEventsController::class, 'visits'])->name('stats.visits');
     Route::get('/visits-unique', [TrackedEventsController::class, 'getUniqueUsersDomain'])->name('stats.visits-unique');
+    Route::get('/bounce-rate', [TrackedEventsController::class, 'calculateBounceRate'])->name('stats.bounce-rate');
     Route::get('/referers', [TrackedEventsController::class, 'referers'])->name('stats.referers');
     Route::get('/most-visited', [TrackedEventsController::class, 'mostVisited'])->name('stats.most-visited');
+    Route::get('/devices', [TrackedEventsController::class, 'devices'])->name('stats.devices');
+    Route::get('/provenance', [TrackedEventsController::class, 'provenance'])->name('stats.provenance');
 });
 
 require __DIR__ . '/auth.php';

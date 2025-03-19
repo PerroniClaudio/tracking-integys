@@ -119,18 +119,23 @@ const csrf_token = document
             ];
 
             let sourceData = sources.map((source) => {
+                let sourceValue = 0;
+
                 datasource.forEach((row) => {
+                    console.log(row);
                     if (row.source === source) {
-                        return row.value;
+                        sourceValue = row.value;
                     }
                 });
+
+                return sourceValue;
             });
 
             const data = {
                 labels: sourcesLabels,
                 datasets: [
                     {
-                        data: [1, 2, 3, 4, 5],
+                        data: sourceData,
                         backgroundColor: [
                             "rgba(255, 99, 132, 0.2)",
                             "rgba(54, 162, 235, 0.2)",

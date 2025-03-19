@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\TrackedEvents;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Reefki\DeviceDetector\Device;
+use DeviceDetector\Parser\Client\Browser;
 
 class TrackedEventsController extends Controller {
     /**
@@ -591,6 +593,7 @@ class TrackedEventsController extends Controller {
      */
 
     public function referers(Request $request) {
+        $domain = $request->domain ?? "";
         switch ($request->precision) {
             case "today":
 
@@ -600,6 +603,7 @@ class TrackedEventsController extends Controller {
                         "PAGE_VIEW",
                         "ARTICLE_VIEW"
                     ])
+                    ->where('url', 'like', '%' . $domain . '%')
                     ->orderBy('created_at')
                     ->get();
 
@@ -619,6 +623,7 @@ class TrackedEventsController extends Controller {
                         "PAGE_VIEW",
                         "ARTICLE_VIEW"
                     ])
+                    ->where('url', 'like', '%' . $domain . '%')
                     ->orderBy('created_at')
                     ->get();
 
@@ -638,6 +643,7 @@ class TrackedEventsController extends Controller {
                         "PAGE_VIEW",
                         "ARTICLE_VIEW"
                     ])
+                    ->where('url', 'like', '%' . $domain . '%')
                     ->orderBy('created_at')
                     ->get();
 
@@ -657,6 +663,7 @@ class TrackedEventsController extends Controller {
                         "PAGE_VIEW",
                         "ARTICLE_VIEW"
                     ])
+                    ->where('url', 'like', '%' . $domain . '%')
                     ->orderBy('created_at')
                     ->get();
 
@@ -676,6 +683,7 @@ class TrackedEventsController extends Controller {
                         "PAGE_VIEW",
                         "ARTICLE_VIEW"
                     ])
+                    ->where('url', 'like', '%' . $domain . '%')
                     ->orderBy('created_at')
                     ->get();
 
@@ -695,6 +703,7 @@ class TrackedEventsController extends Controller {
                         "PAGE_VIEW",
                         "ARTICLE_VIEW"
                     ])
+                    ->where('url', 'like', '%' . $domain . '%')
                     ->orderBy('created_at')
                     ->get();
 
@@ -859,6 +868,373 @@ class TrackedEventsController extends Controller {
         $mostVisited = $mostVisited->values()->all();
 
         return response()->json($mostVisited);
+    }
+
+    public function calculateBounceRate(Request $request) {
+        $domain = $request->domain ?? "";
+
+        switch ($request->precision) {
+            case "today":
+            case "week":
+                $start_date = Carbon::now()->startOfDay();
+                $end_date = Carbon::now()->endOfDay();
+                $groupByFormat = 'Y-m-d';
+                break;
+            case "month":
+                $start_date = Carbon::now()->startOfMonth();
+                $end_date = Carbon::now()->endOfMonth();
+                $groupByFormat = 'Y-W'; // Group by week
+                break;
+            case "sixmonths":
+                $start_date = Carbon::now()->startOfMonth()->subMonths(6);
+                $end_date = Carbon::now()->endOfMonth();
+                $groupByFormat = 'Y-m';
+                break;
+            case "fullyear":
+                $start_date = Carbon::now()->startOfYear();
+                $end_date = Carbon::now()->endOfYear();
+                $groupByFormat = 'Y-m';
+                break;
+            case "custom":
+                $start_date = Carbon::createFromFormat('Y-m-d', $request->start_date);
+                $end_date = Carbon::createFromFormat('Y-m-d', $request->end_date);
+                $diffInDays = $start_date->diffInDays($end_date);
+                if ($diffInDays <= 7) {
+                    $groupByFormat = 'Y-m-d';
+                } elseif ($diffInDays <= 30) {
+                    $groupByFormat = 'Y-W'; // Group by week
+                } else {
+                    $groupByFormat = 'Y-m';
+                }
+                break;
+            default:
+                return response()->json([
+                    'message' => 'Scegli una precision tra: today, week, month, sixmonths, fullyear, custom'
+                ]);
+        }
+
+        // Get total visits grouped by date
+        $totalVisits = TrackedEvents::where('created_at', '>=', $start_date)
+            ->where('created_at', '<=', $end_date)
+            ->where('url', 'like', '%' . $domain . '%')
+            ->get()
+            ->groupBy(function ($date) use ($groupByFormat) {
+                return Carbon::parse($date->created_at)->format($groupByFormat);
+            });
+
+        // Get bounce visits grouped by date
+        $bounceVisits = TrackedEvents::where('created_at', '>=', $start_date)
+            ->where('created_at', '<=', $end_date)
+            ->where('url', 'like', '%' . $domain . '%')
+            ->get()
+            ->groupBy(function ($date) use ($groupByFormat) {
+                return Carbon::parse($date->created_at)->format($groupByFormat);
+            })
+            ->map(function ($group) {
+                return $group->groupBy('session_id')->filter(function ($session) {
+                    return $session->count() === 1;
+                })->count();
+            });
+
+        $bounceRateData = [];
+
+        // Calculate bounce rate per date interval
+        foreach ($totalVisits as $date => $data) {
+            $bounceVisitsCount = $bounceVisits[$date] ?? 0;
+            $totalVisitsCount = $data->count();
+            $bounceRate = $totalVisitsCount > 0 ? ($bounceVisitsCount / $totalVisitsCount) * 100 : 0;
+            $bounceRateData[] = [
+                "date" => $date,
+                "rate" => round($bounceRate, 2)
+            ];
+        }
+
+        return response()->json($bounceRateData);
+    }
+
+    public function devices(Request $request) {
+
+        $domain = $request->domain ?? "";
+        $devices_cache = [];
+        $devices = [];
+        $operating_systems = [];
+        $browsers = [];
+
+        switch ($request->precision) {
+            case "today":
+
+                $events = TrackedEvents::where('created_at', '>=', Carbon::now()->startOfDay())
+                    ->where('created_at', '<=', Carbon::now()->endOfDay())
+                    ->whereIn('event_code', [
+                        "PAGE_VIEW",
+                        "ARTICLE_VIEW"
+                    ])
+                    ->where('url', 'like', '%' . $domain . '%')
+                    ->orderBy('created_at')
+                    ->get();
+
+                break;
+            case "week":
+
+                $events = TrackedEvents::where('created_at', '>=', Carbon::now()->startOfWeek())
+                    ->where('created_at', '<=', Carbon::now()->endOfWeek())
+                    ->whereIn('event_code', [
+                        "PAGE_VIEW",
+                        "ARTICLE_VIEW"
+                    ])
+                    ->where('url', 'like', '%' . $domain . '%')
+                    ->orderBy('created_at')
+                    ->get();
+
+
+
+                break;
+            case "month":
+
+                $events = TrackedEvents::where('created_at', '>=', Carbon::now()->startOfMonth())
+                    ->where('created_at', '<=', Carbon::now()->endOfMonth())
+                    ->whereIn('event_code', [
+                        "PAGE_VIEW",
+                        "ARTICLE_VIEW"
+                    ])
+                    ->where('url', 'like', '%' . $domain . '%')
+                    ->orderBy('created_at')
+                    ->get();
+
+
+
+                break;
+            case "sixmonths":
+
+                $events = TrackedEvents::where('created_at', '>=', Carbon::now()->startOfMonth()->subMonths(6))
+                    ->where('created_at', '<=', Carbon::now()->endOfMonth())
+                    ->whereIn('event_code', [
+                        "PAGE_VIEW",
+                        "ARTICLE_VIEW"
+                    ])
+                    ->where('url', 'like', '%' . $domain . '%')
+                    ->orderBy('created_at')
+                    ->get();
+
+
+                break;
+            case "fullyear":
+
+                $events = TrackedEvents::where('created_at', '>=', Carbon::now()->startOfYear())
+                    ->where('created_at', '<=', Carbon::now()->endOfYear())
+                    ->whereIn('event_code', [
+                        "PAGE_VIEW",
+                        "ARTICLE_VIEW"
+                    ])
+                    ->where('url', 'like', '%' . $domain . '%')
+                    ->orderBy('created_at')
+                    ->get();
+
+                break;
+            case "custom":
+
+                $events = TrackedEvents::where('created_at', '>=', $request->start_date)
+                    ->where('created_at', '<=', $request->end_date)
+                    ->whereIn('event_code', [
+                        "PAGE_VIEW",
+                        "ARTICLE_VIEW"
+                    ])
+                    ->where('url', 'like', '%' . $domain . '%')
+                    ->orderBy('created_at')
+                    ->get();
+
+                break;
+            default:
+                return response()->json([
+                    'message' => 'Scegli una precision tra: today, week, month, sixmonths, fullyear, custom'
+                ]);
+                break;
+        }
+
+        foreach ($events as $event) {
+
+            if (!isset($devices_cache[$event->user_agent])) {
+                $device = Device::detect($event->user_agent);
+                $device->parse();
+
+                if ($device->isBot()) {
+                    continue;
+                }
+
+                $os = $device->getOs();
+
+                if ($os["version"] === "") {
+                    $os_name = $os["name"];
+                } else {
+                    $os_name = $os["name"] . " " . $os["version"];
+                }
+
+                $devices_cache[$event->user_agent] = [
+                    'device' => ucfirst($device->getDeviceName()),
+                    'os' => $os_name,
+                    'browser' => Browser::getBrowserFamily($device->getClient('name'))
+                ];
+
+                $device = $devices_cache[$event->user_agent];
+            } else {
+                $device = $devices_cache[$event->user_agent];
+            }
+
+
+            if (!isset($devices[$device['device']])) {
+                $devices[$device['device']] = 0;
+            } else {
+                $devices[$device['device']]++;
+            }
+
+            if (!isset($operating_systems[$device['os']])) {
+                $operating_systems[$device['os']] = 0;
+            } else {
+                $operating_systems[$device['os']]++;
+            }
+
+            if (!isset($browsers[$device['browser']])) {
+                $browsers[$device['browser']] = 0;
+            } else {
+                $browsers[$device['browser']]++;
+            }
+        }
+
+        arsort($devices);
+        arsort($operating_systems);
+        arsort($browsers);
+
+        $devices = array_slice($devices, 0, 5, true);
+        $operating_systems = array_slice($operating_systems, 0, 5, true);
+        $browsers = array_slice($browsers, 0, 5, true);
+
+        return response()->json([
+            'devices' => $devices,
+            'operating_systems' => $operating_systems,
+            'browsers' => $browsers
+        ]);
+    }
+
+    public function provenance(Request $request) {
+        $domain = $request->domain ?? "";
+        $nations = [];
+        $cities = [];
+
+        switch ($request->precision) {
+            case "today":
+
+                $events = TrackedEvents::where('created_at', '>=', Carbon::now()->startOfDay())
+                    ->where('created_at', '<=', Carbon::now()->endOfDay())
+                    ->whereIn('event_code', [
+                        "PAGE_VIEW",
+                        "ARTICLE_VIEW"
+                    ])
+                    ->where('url', 'like', '%' . $domain . '%')
+                    ->orderBy('created_at')
+                    ->get();
+
+                break;
+            case "week":
+
+                $events = TrackedEvents::where('created_at', '>=', Carbon::now()->startOfWeek())
+                    ->where('created_at', '<=', Carbon::now()->endOfWeek())
+                    ->whereIn('event_code', [
+                        "PAGE_VIEW",
+                        "ARTICLE_VIEW"
+                    ])
+                    ->where('url', 'like', '%' . $domain . '%')
+                    ->orderBy('created_at')
+                    ->get();
+
+
+
+                break;
+            case "month":
+
+                $events = TrackedEvents::where('created_at', '>=', Carbon::now()->startOfMonth())
+                    ->where('created_at', '<=', Carbon::now()->endOfMonth())
+                    ->whereIn('event_code', [
+                        "PAGE_VIEW",
+                        "ARTICLE_VIEW"
+                    ])
+                    ->where('url', 'like', '%' . $domain . '%')
+                    ->orderBy('created_at')
+                    ->get();
+
+
+
+                break;
+            case "sixmonths":
+
+                $events = TrackedEvents::where('created_at', '>=', Carbon::now()->startOfMonth()->subMonths(6))
+                    ->where('created_at', '<=', Carbon::now()->endOfMonth())
+                    ->whereIn('event_code', [
+                        "PAGE_VIEW",
+                        "ARTICLE_VIEW"
+                    ])
+                    ->where('url', 'like', '%' . $domain . '%')
+                    ->orderBy('created_at')
+                    ->get();
+
+
+                break;
+            case "fullyear":
+
+                $events = TrackedEvents::where('created_at', '>=', Carbon::now()->startOfYear())
+                    ->where('created_at', '<=', Carbon::now()->endOfYear())
+                    ->whereIn('event_code', [
+                        "PAGE_VIEW",
+                        "ARTICLE_VIEW"
+                    ])
+                    ->where('url', 'like', '%' . $domain . '%')
+                    ->orderBy('created_at')
+                    ->get();
+
+                break;
+            case "custom":
+
+                $events = TrackedEvents::where('created_at', '>=', $request->start_date)
+                    ->where('created_at', '<=', $request->end_date)
+                    ->whereIn('event_code', [
+                        "PAGE_VIEW",
+                        "ARTICLE_VIEW"
+                    ])
+                    ->where('url', 'like', '%' . $domain . '%')
+                    ->orderBy('created_at')
+                    ->get();
+
+                break;
+            default:
+                return response()->json([
+                    'message' => 'Scegli una precision tra: today, week, month, sixmonths, fullyear, custom'
+                ]);
+                break;
+        }
+
+        foreach ($events as $event) {
+            if (!isset($nations[$event->ip_country])) {
+                $nations[$event->ip_country] = 0;
+            } else {
+                $nations[$event->ip_country]++;
+            }
+
+            if (!isset($cities[$event->ip_city])) {
+                $cities[$event->ip_city] = 0;
+            } else {
+                $cities[$event->ip_city]++;
+            }
+        }
+
+        arsort($nations);
+        arsort($cities);
+
+        $nations = array_slice($nations, 0, 5, true);
+        $cities = array_slice($cities, 0, 5, true);
+
+        return response()->json([
+            'nations' => $nations,
+            'cities' => $cities,
+        ]);
     }
 
     public function test() {

@@ -17,6 +17,7 @@
         "laravel/socialite": "^5.18",
         "laravel/tinker": "^2.10.1",
         "mallardduck/blade-lucide-icons": "^1.23",
+        "reefki/laravel-device-detector": "^1.0",
         "socialiteproviders/microsoft": "^4.6"
     },
     "require-dev": {
