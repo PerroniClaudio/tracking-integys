@@ -22,7 +22,13 @@
                                 </fieldset>
                                 <fieldset class="fieldset">
                                     <legend class="fieldset-legend">{{ __('contact_requests.email') }}</legend>
-                                    <input type="text" class="input w-full" value="{{ $request->email }}" disabled />
+                                    <div class="flex items-center gap-2">
+                                        <input type="text" class="input w-full" value="{{ $request->email }}"
+                                            disabled />
+                                        <a href="mailto:{{ $request->email }}" class="btn btn-sm btn-primary h-full">
+                                            <x-lucide-mail class="w-4 h-4" />
+                                        </a>
+                                    </div>
                                 </fieldset>
                                 <fieldset class="fieldset">
                                     <legend class="fieldset-legend">{{ __('contact_requests.business_name') }}</legend>
