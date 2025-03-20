@@ -42,4 +42,8 @@ class TrackedEvents extends Model {
         }
         return $url; // Ritorna l'URL originale se non riesce a estrarre il dominio
     }
+
+    public function contactFormRequest() {
+        return $this->hasOne(ContactFormRequest::class);
+    }
 }

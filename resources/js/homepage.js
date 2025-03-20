@@ -66,8 +66,8 @@ const csrf_token = document
                         {
                             data: data.map((row) => row.visits),
                             fill: true,
-                            borderColor: "rgba(118, 115, 143, 1)",
-                            backgroundColor: "rgba(118, 115, 143, 0.4)",
+                            borderColor: "rgba(232, 71, 63, 1)",
+                            backgroundColor: "rgba(232, 71, 63, 0.4)",
                         },
                     ],
                 },
@@ -218,8 +218,8 @@ const csrf_token = document
                 datasets: [
                     {
                         data: datasource.map((row) => row.value),
-                        backgroundColor: "rgba(118, 115, 143, 0.4)",
-                        borderColor: "rgba(118, 115, 143, 1)",
+                        backgroundColor: "rgba(232, 71, 63, 0.4)",
+                        borderColor: "rgba(232, 71, 63, 1)",
                         borderWidth: 1,
                     },
                 ],

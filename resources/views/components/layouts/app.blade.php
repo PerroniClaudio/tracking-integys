@@ -52,7 +52,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="{{ route('contact-form-requests') }}">
                         <div class="flex items-center">
                             <x-lucide-clipboard-list class="h-6 w-6 text-primary" />
                             <span class="ml-2">{{ __('navbar.contact_requests') }}</span>

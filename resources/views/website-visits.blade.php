@@ -40,21 +40,21 @@
                     <input type="radio" name="my_tabs_3" class="tab"
                         aria-label="{{ __('website_visits.unique_visitors') }}" checked="checked" />
                     <div class="tab-content bg-base-100 border-base-300 p-6">
-                        <canvas id="unique_visitors" class="w-full"></canvas>
+                        <canvas id="unique_visitors" class="w-full max-h-[40vh]"></canvas>
                     </div>
 
                     <input type="radio" name="my_tabs_3" class="tab"
                         aria-label="{{ __('website_visits.page_views') }}" />
                     <div class="tab-content bg-base-100 border-base-300 p-6">
 
-                        <canvas id="visits_total" class="w-full "></canvas>
+                        <canvas id="visits_total" class="w-full max-h-[40vh] "></canvas>
                     </div>
 
                     <input type="radio" name="my_tabs_3" class="tab"
                         aria-label="{{ __('website_visits.bounce_rate') }}" />
                     <div class="tab-content bg-base-100 border-base-300 p-6">
 
-                        <canvas id="bounce_rate" class="w-full "></canvas>
+                        <canvas id="bounce_rate" class="w-full max-h-[40vh] "></canvas>
                     </div>
                 </div>
 
@@ -62,13 +62,13 @@
                     <div class="card card-border bg-base-100 w-full lg:col-span-2">
                         <div class="card-body">
                             <h4 class="text-lg">{{ __('website_visits.most_visited_pages') }}</h4>
-                            <canvas id="piuvisitate" class="w-full"></canvas>
+                            <canvas id="piuvisitate" class="w-full max-h-[40vh]"></canvas>
                         </div>
                     </div>
                     <div class="card card-border bg-base-100 w-full">
                         <div class="card-body">
                             <h4 class="text-lg">{{ __('website_visits.most_visited_pages') }}</h4>
-                            <canvas id="provenienza" class="w-full"></canvas>
+                            <canvas id="provenienza" class="w-full max-h-[40vh]"></canvas>
                             <div class="flex flex-col gap-1">
                                 <div class="flex items-center gap-2">
                                     <div class="w-6 h-6 bg-[#411D20] rounded-full"></div>
@@ -100,18 +100,18 @@
                     <input type="radio" name="my_tabs_4" class="tab"
                         aria-label="{{ __('website_visits.devices') }}" checked="checked" />
                     <div class="tab-content bg-base-100 border-base-300 p-6">
-                        <canvas id="devices" class="w-full"></canvas>
+                        <canvas id="devices" class="w-full max-h-[40vh]"></canvas>
                     </div>
 
                     <input type="radio" name="my_tabs_4" class="tab"
                         aria-label="{{ __('website_visits.browsers') }}" />
                     <div class="tab-content bg-base-100 border-base-300 p-6"><canvas id="browsers"
-                            class="w-full"></canvas></div>
+                            class="w-full max-h-[40vh]"></canvas></div>
 
                     <input type="radio" name="my_tabs_4" class="tab"
                         aria-label="{{ __('website_visits.operating_systems') }}" />
                     <div class="tab-content bg-base-100 border-base-300 p-6"><canvas id="os"
-                            class="w-full"></canvas></div>
+                            class="w-full max-h-[40vh]"></canvas></div>
                 </div>
 
                 <div class="grid lg:grid-cols-2 gap-2 mb-16">

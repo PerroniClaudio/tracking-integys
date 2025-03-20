@@ -93,8 +93,8 @@ function customDateFilter() {
                 datasets: [
                     {
                         data: datasource.map((row) => row.value),
-                        backgroundColor: "rgba(118, 115, 143, 0.4)",
-                        borderColor: "rgba(118, 115, 143, 1)",
+                        backgroundColor: "rgba(232, 71, 63, 0.4)",
+                        borderColor: "rgba(232, 71, 63, 1)",
                         borderWidth: 1,
                     },
                 ],
@@ -233,8 +233,8 @@ function customDateFilter() {
                         {
                             data: data.map((row) => row.rate),
                             fill: true,
-                            borderColor: "rgba(118, 115, 143, 1)",
-                            backgroundColor: "rgba(118, 115, 143, 0.4)",
+                            borderColor: "rgba(232, 71, 63, 1)",
+                            backgroundColor: "rgba(232, 71, 63, 0.4)",
                         },
                     ],
                 },
@@ -287,8 +287,8 @@ function customDateFilter() {
                         {
                             data: data.map((row) => row.visits),
                             fill: true,
-                            borderColor: "rgba(118, 115, 143, 1)",
-                            backgroundColor: "rgba(118, 115, 143, 0.4)",
+                            borderColor: "rgba(232, 71, 63, 1)",
+                            backgroundColor: "rgba(232, 71, 63, 0.4)",
                         },
                     ],
                 },
@@ -329,8 +329,8 @@ function customDateFilter() {
                         {
                             data: data.map((row) => row.visits),
                             fill: true,
-                            borderColor: "rgba(118, 115, 143, 1)",
-                            backgroundColor: "rgba(118, 115, 143, 0.4)",
+                            borderColor: "rgba(232, 71, 63, 1)",
+                            backgroundColor: "rgba(232, 71, 63, 0.4)",
                         },
                     ],
                 },
@@ -376,8 +376,8 @@ function customDateFilter() {
                         {
                             label: "Devices",
                             data: Object.values(devices),
-                            backgroundColor: "rgba(118, 115, 143, 0.4)",
-                            borderColor: "rgba(118, 115, 143, 1)",
+                            backgroundColor: "rgba(232, 71, 63, 0.4)",
+                            borderColor: "rgba(232, 71, 63, 1)",
                             borderWidth: 1,
                         },
                     ],
@@ -406,8 +406,8 @@ function customDateFilter() {
                         {
                             label: "Browsers",
                             data: Object.values(browsers),
-                            backgroundColor: "rgba(118, 115, 143, 0.4)",
-                            borderColor: "rgba(118, 115, 143, 1)",
+                            backgroundColor: "rgba(232, 71, 63, 0.4)",
+                            borderColor: "rgba(232, 71, 63, 1)",
                             borderWidth: 1,
                         },
                     ],
@@ -436,8 +436,8 @@ function customDateFilter() {
                         {
                             label: "OS",
                             data: Object.values(operating_systems),
-                            backgroundColor: "rgba(118, 115, 143, 0.4)",
-                            borderColor: "rgba(118, 115, 143, 1)",
+                            backgroundColor: "rgba(232, 71, 63, 0.4)",
+                            borderColor: "rgba(232, 71, 63, 1)",
                             borderWidth: 1,
                         },
                     ],
@@ -490,8 +490,8 @@ function customDateFilter() {
                         {
                             label: "",
                             data: Object.values(cities),
-                            backgroundColor: "rgba(118, 115, 143, 0.4)",
-                            borderColor: "rgba(118, 115, 143, 1)",
+                            backgroundColor: "rgba(232, 71, 63, 0.4)",
+                            borderColor: "rgba(232, 71, 63, 1)",
                             borderWidth: 1,
                         },
                     ],
@@ -523,8 +523,8 @@ function customDateFilter() {
                         {
                             label: "Nazioni",
                             data: Object.values(nations),
-                            backgroundColor: "rgba(118, 115, 143, 0.4)",
-                            borderColor: "rgba(118, 115, 143, 1)",
+                            backgroundColor: "rgba(232, 71, 63, 0.4)",
+                            borderColor: "rgba(232, 71, 63, 1)",
                             borderWidth: 1,
                         },
                     ],

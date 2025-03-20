@@ -1,6 +1,8 @@
 @import "tailwindcss";
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/vendor/pagination/*.blade.php';
+
 @source '../../storage/framework/views/*.php';
 @source "../**/*.blade.php";
 @source "../**/*.js";
@@ -18,7 +20,7 @@
     --color-base-200: #35342c;
     --color-base-300: #3d3c32;
     --color-base-content: #e8e8e3;
-    --color-primary: #c4c5b7;
+    --color-primary: #e73028;
     --color-primary-content: #12120e;
     --color-secondary: #4a565c;
     --color-secondary-content: #e8e8e3;

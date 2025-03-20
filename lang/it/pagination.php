@@ -1,7 +1,7 @@
 <?php
 
 return [
-    /*
+	/*
 	|--------------------------------------------------------------------------
 	| Pagination Language Lines
 	|--------------------------------------------------------------------------
@@ -12,6 +12,7 @@ return [
 	|
 	*/
 
-    "previous" => "&laquo; Precedente",
-    "next" => "Successivo &raquo;",
+	"previous" => "&laquo; Precedente",
+	"next" => "Successivo &raquo;",
+	"showing" => "Mostrando :first a :last di :total risultati",
 ];

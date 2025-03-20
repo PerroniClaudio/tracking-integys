@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\TrackedEventsController;
+use App\Http\Controllers\ContactFormRequestController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -9,6 +10,8 @@ Route::get('/', function () {
 
 Route::get('/home', [TrackedEventsController::class, 'index'])->middleware(['auth'])->name('home');
 Route::get('/website-visits', [TrackedEventsController::class, 'websiteVisits'])->middleware(['auth'])->name('website-visits');
+Route::get('/contact-form-requests', [ContactFormRequestController::class, 'index'])->middleware(['auth'])->name('contact-form-requests');
+Route::get('/contact-form-request/{id}', [ContactFormRequestController::class, 'show'])->middleware(['auth'])->name('contact-form-request.view');
 Route::get('/test', [TrackedEventsController::class, 'test']);
 
 Route::group([
