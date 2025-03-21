@@ -61,6 +61,44 @@ return [
                 PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
             ]) : [],
         ],
+        'news_integys' => [
+            'driver' => 'mysql',
+            'url' => env('INTEGYS_NEWS_DB_URL'),
+            'host' => env('INTEGYS_NEWS_DB_HOST', '127.0.0.1'),
+            'port' => env('INTEGYS_NEWS_DB_PORT', '3306'),
+            'database' => env('INTEGYS_NEWS_DB_DATABASE', 'laravel'),
+            'username' => env('INTEGYS_NEWS_DB_USERNAME', 'root'),
+            'password' => env('INTEGYS_NEWS_DB_PASSWORD', ''),
+            'unix_socket' => env('INTEGYS_NEWS_DB_SOCKET', ''),
+            'charset' => env('INTEGYS_NEWS_DB_CHARSET', 'utf8mb4'),
+            'collation' => env('INTEGYS_NEWS_DB_COLLATION', 'utf8mb4_unicode_ci'),
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'strict' => true,
+            'engine' => null,
+            'options' => extension_loaded('pdo_mysql') ? array_filter([
+                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+            ]) : [],
+        ],
+        'dpodelcomune' => [
+            'driver' => 'mysql',
+            'url' => env('DPO_DB_URL'),
+            'host' => env('DPO_DB_HOST', '127.0.0.1'),
+            'port' => env('DPO_DB_PORT', '3306'),
+            'database' => env('DPO_DB_DATABASE', 'laravel'),
+            'username' => env('DPO_DB_USERNAME', 'root'),
+            'password' => env('DPO_DB_PASSWORD', ''),
+            'unix_socket' => env('DPO_DB_SOCKET', ''),
+            'charset' => env('DPO_DB_CHARSET', 'utf8mb4'),
+            'collation' => env('DPO_DB_COLLATION', 'utf8mb4_unicode_ci'),
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'strict' => true,
+            'engine' => null,
+            'options' => extension_loaded('pdo_mysql') ? array_filter([
+                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+            ]) : [],
+        ],
 
         'mariadb' => [
             'driver' => 'mariadb',
@@ -147,7 +185,7 @@ return [
 
         'options' => [
             'cluster' => env('REDIS_CLUSTER', 'redis'),
-            'prefix' => env('REDIS_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_').'_database_'),
+            'prefix' => env('REDIS_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_') . '_database_'),
             'persistent' => env('REDIS_PERSISTENT', false),
         ],
 

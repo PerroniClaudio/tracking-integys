@@ -7,6 +7,8 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Reefki\DeviceDetector\Device;
 use DeviceDetector\Parser\Client\Browser;
+use App\Config\UrlMapping;
+use Illuminate\Support\Facades\DB;
 
 class TrackedEventsController extends Controller {
     /**
@@ -1235,6 +1237,34 @@ class TrackedEventsController extends Controller {
             'nations' => $nations,
             'cities' => $cities,
         ]);
+    }
+
+    public function privateAreaUsers(Request $request) {
+
+        $different_domains = TrackedEvents::select('url')->distinct()->get();
+        $domain_list = [];
+
+        foreach ($different_domains as $domain) {
+            if (!in_array($domain->domain(), $domain_list)) {
+                $domain_list[] = $domain->domain();
+            }
+        }
+
+        $selected_domain = $request->domain ?? $domain_list[0];
+        $users = $this->getUsersFromDomain($selected_domain);
+
+        return view('private-area-users', [
+            'domain_list' => $domain_list,
+            'domain' => $selected_domain
+        ]);
+    }
+
+    private function getUsersFromDomain($domain) {
+        $envVariable = UrlMapping::getPrefix($domain);
+
+        $connection = DB::connection($envVariable);
+
+        return [];
     }
 
     public function test() {

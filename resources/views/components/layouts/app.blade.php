@@ -59,8 +59,8 @@
                         </div>
                     </a>
                 </li>
-                <li>
-                    <a href="#">
+                <li class="hidden">
+                    <a href="{{ route('private-area-users') }}">
                         <div class="flex items-center">
                             <x-lucide-users class="h-6 w-6 text-primary" />
                             <span class="ml-2">{{ __('navbar.private_area_users') }}</span>

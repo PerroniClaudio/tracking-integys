@@ -12,6 +12,7 @@ Route::get('/home', [TrackedEventsController::class, 'index'])->middleware(['aut
 Route::get('/website-visits', [TrackedEventsController::class, 'websiteVisits'])->middleware(['auth'])->name('website-visits');
 Route::get('/contact-form-requests', [ContactFormRequestController::class, 'index'])->middleware(['auth'])->name('contact-form-requests');
 Route::get('/contact-form-request/{id}', [ContactFormRequestController::class, 'show'])->middleware(['auth'])->name('contact-form-request.view');
+Route::get('/private-area-users', [TrackedEventsController::class, 'privateAreaUsers'])->middleware(['auth'])->name('private-area-users');
 Route::get('/test', [TrackedEventsController::class, 'test']);
 
 Route::group([
