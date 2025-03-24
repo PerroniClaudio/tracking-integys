@@ -123,17 +123,19 @@ class TrackedEventsController extends Controller {
     }
 
     private function getUniqueUsers(Carbon $start_date, Carbon $end_date) {
-        $uniqueUsersCount = TrackedEvents::where('created_at', '>=', $start_date->startOfDay())
+        $events = TrackedEvents::where('created_at', '>=', $start_date->startOfDay())
             ->where('created_at', '<=', $end_date->endOfDay())
             ->whereIn('event_code', [
                 "PAGE_VIEW",
                 "ARTICLE_VIEW"
             ])
-            ->groupBy('ip_address', 'session_id')
-            ->orderBy('created_at')
-            ->get()
-            ->count();
-        return $uniqueUsersCount;
+            ->get();
+    
+        $uniqueUsers = $events->unique(function ($item) {
+            return $item['ip_address'] . $item['session_id'];
+        });
+    
+        return $uniqueUsers->count();
     }
 
     private function calculateAveragePageView(Carbon $start_date, Carbon $end_date) {
