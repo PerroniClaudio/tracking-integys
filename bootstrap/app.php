@@ -13,7 +13,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->validateCsrfTokens(except: [
-            'https://tracking.integys.test/webhook/endpoint',
+            'https://tracking.ifortech.com/webhook/endpoint',
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
