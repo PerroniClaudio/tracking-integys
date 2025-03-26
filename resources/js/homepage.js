@@ -178,10 +178,10 @@ const csrf_token = document
             : `/stats/most-visited?precision=${precision}`;
 
     const urlSources = [
-        "https://news.integys.com/",
-        "https://news.integys.com/news/",
-        "https://www.dpodelcomune.com/",
-        "http://localhost:3000/",
+        // "https://news.integys.com/",
+        // "https://news.integys.com/news/",
+        // "https://www.dpodelcomune.com/",
+        // "http://localhost:3000/",
     ];
 
     axios

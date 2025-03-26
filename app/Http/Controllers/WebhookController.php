@@ -41,7 +41,7 @@ class WebhookController extends Controller {
                 return response()->json(['message' => 'Webhook received', "data" => $request->all()], 200);
                 break;
             default:
-                return response()->json(['message' => 'Invalid webhook event'], 400);
+                return response()->json(['message' => 'Invalid webhook event', 'event' => $request->header('X-Tracker-Webhook-Event')], 400);
                 break;
         }
 

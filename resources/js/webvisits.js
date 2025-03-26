@@ -210,10 +210,10 @@ function customDateFilter() {
 (async () => {
     let visitsUrl =
         precision == "custom"
-            ? `https://tracking.integys.test/stats/bounce-rate?precision=${precision}&start_date=${urlParams.get(
+            ? `/stats/bounce-rate?precision=${precision}&start_date=${urlParams.get(
                   "start_date"
               )}&end_date=${urlParams.get("end_date")}&domain=${website}`
-            : `https://tracking.integys.test/stats/bounce-rate?precision=${precision}&domain=${website}`;
+            : `/stats/bounce-rate?precision=${precision}&domain=${website}`;
 
     axios
         .get(visitsUrl, {
@@ -264,10 +264,10 @@ function customDateFilter() {
 (async () => {
     let visitsUrl =
         precision == "custom"
-            ? `https://tracking.integys.test/stats/visits-unique?precision=${precision}&start_date=${urlParams.get(
+            ? `/stats/visits-unique?precision=${precision}&start_date=${urlParams.get(
                   "start_date"
               )}&end_date=${urlParams.get("end_date")}&domain=${website}`
-            : `https://tracking.integys.test/stats/visits-unique?precision=${precision}&domain=${website}`;
+            : `/stats/visits-unique?precision=${precision}&domain=${website}`;
 
     axios
         .get(visitsUrl, {
@@ -306,10 +306,10 @@ function customDateFilter() {
 (async () => {
     let visitsUrl =
         precision == "custom"
-            ? `https://tracking.integys.test/stats/visits?precision=${precision}&start_date=${urlParams.get(
+            ? `/stats/visits?precision=${precision}&start_date=${urlParams.get(
                   "start_date"
               )}&end_date=${urlParams.get("end_date")}&domain=${website}`
-            : `https://tracking.integys.test/stats/visits?precision=${precision}&domain=${website}`;
+            : `/stats/visits?precision=${precision}&domain=${website}`;
 
     axios
         .get(visitsUrl, {
@@ -348,10 +348,10 @@ function customDateFilter() {
 (async () => {
     let visitsUrl =
         precision == "custom"
-            ? `https://tracking.integys.test/stats/devices?precision=${precision}&start_date=${urlParams.get(
+            ? `/stats/devices?precision=${precision}&start_date=${urlParams.get(
                   "start_date"
               )}&end_date=${urlParams.get("end_date")}&domain=${website}`
-            : `https://tracking.integys.test/stats/devices?precision=${precision}&domain=${website}`;
+            : `/stats/devices?precision=${precision}&domain=${website}`;
 
     axios
         .get(visitsUrl, {
@@ -463,10 +463,10 @@ function customDateFilter() {
 (async () => {
     let visitsUrl =
         precision == "custom"
-            ? `https://tracking.integys.test/stats/provenance?precision=${precision}&start_date=${urlParams.get(
+            ? `/stats/provenance?precision=${precision}&start_date=${urlParams.get(
                   "start_date"
               )}&end_date=${urlParams.get("end_date")}&domain=${website}`
-            : `https://tracking.integys.test/stats/provenance?precision=${precision}&domain=${website}`;
+            : `/stats/provenance?precision=${precision}&domain=${website}`;
 
     axios
         .get(visitsUrl, {

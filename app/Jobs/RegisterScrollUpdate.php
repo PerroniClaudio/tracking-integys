@@ -29,6 +29,7 @@ class RegisterScrollUpdate implements ShouldQueue {
         //
 
         $originalEvent = TrackedEvents::where("session_id", $this->payload['session_id'])
+            ->where("url", $this->payload['url'])
             ->where("event_code", "PAGE_VIEW")
             ->orWhere("event_code", "ARTICLE_VIEW")
             ->latest()
