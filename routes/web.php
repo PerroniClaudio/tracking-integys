@@ -13,6 +13,8 @@ Route::get('/website-visits', [TrackedEventsController::class, 'websiteVisits'])
 Route::get('/contact-form-requests', [ContactFormRequestController::class, 'index'])->middleware(['auth'])->name('contact-form-requests');
 Route::get('/contact-form-request/{id}', [ContactFormRequestController::class, 'show'])->middleware(['auth'])->name('contact-form-request.view');
 Route::get('/private-area-users', [TrackedEventsController::class, 'privateAreaUsers'])->middleware(['auth'])->name('private-area-users');
+Route::get('/article-visits', [TrackedEventsController::class, 'articleVisits'])->middleware(['auth'])->name('article-visits');
+Route::get('/article-visits/{url}', [TrackedEventsController::class, 'articleVisit'])->middleware(['auth'])->name('article-visit.view');
 Route::get('/test', [TrackedEventsController::class, 'test']);
 
 Route::group([

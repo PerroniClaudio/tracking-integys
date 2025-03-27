@@ -21,4 +21,5 @@ yarn-error.log
 /.nova
 /.vscode
 /.zed
+check_laravel_queue.sh
 .DS_STORE

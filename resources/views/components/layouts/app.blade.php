@@ -52,6 +52,15 @@
                     </a>
                 </li>
                 <li>
+                    <a href="{{ route('article-visits') }}">
+                        <div class="flex items-center">
+                            <x-lucide-newspaper class="h-6 w-6 text-primary" />
+                            <span class="ml-2">{{ __('navbar.article_visits') }}</span>
+                        </div>
+                    </a>
+                </li>
+
+                <li>
                     <a href="{{ route('contact-form-requests') }}">
                         <div class="flex items-center">
                             <x-lucide-clipboard-list class="h-6 w-6 text-primary" />

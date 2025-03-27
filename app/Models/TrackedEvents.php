@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 class TrackedEvents extends Model {
@@ -32,13 +32,24 @@ class TrackedEvents extends Model {
         'session_id',
     ];
 
+    protected static function boot() {
+        parent::boot();
+
+        // Applica uno scope globale per escludere i record con "http://localhost:3000/" nel campo "url"
+        static::addGlobalScope('excludeLocalhost', function (Builder $builder) {
+            $builder->where('url', 'not like', 'http://localhost:3000/%');
+        });
+
+        static::addGlobalScope('excludeVercel', function (Builder $builder) {
+            $builder->where('url', 'not like', '%vercel%');
+        });
+    }
+
     public function domain() {
-
         $url = $this->url;
-
         $matches = [];
         if (preg_match('/^(https?:\/\/[^\/]+)/i', $url, $matches)) {
-            return $matches[1];
+            return $matches[0];
         }
         return $url; // Ritorna l'URL originale se non riesce a estrarre il dominio
     }

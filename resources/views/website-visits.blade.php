@@ -1,11 +1,11 @@
 <x-layouts.app>
     <div class="border-b border-base-200 pb-8 px-4">
         <div class="container mx-auto lg:px-4 flex flex-col gap-2 lg:flex-row lg:items-center justify-between ">
-            <div>
+            <div class="flex-1">
                 <h1 class="text-4xl">{{ __('navbar.website_visits') }}</h1>
             </div>
-            <div class="flex flex-col lg:flex-row gap-2">
-                <div class="join">
+            <div class="flex-1 flex flex-col lg:flex-row gap-2">
+                <div class="join flex-1">
                     <div class="btn btn-primary rounded-l">
                         <x-lucide-globe class="h-6 w-6 text-primary-content" />
                     </div>
@@ -16,7 +16,7 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="join">
+                <div class="join flex-1">
                     <div class="btn btn-primary rounded-l" onclick="choose_date_modal.showModal()">
                         <x-lucide-calendar class="h-6 w-6 text-primary-content" />
                     </div>
