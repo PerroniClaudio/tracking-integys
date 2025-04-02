@@ -72,6 +72,7 @@ class RegisterPageViewEvent implements ShouldQueue {
                 "custom_get_params" => $payload['custom_get_params'],
                 "custom_post_params" => $payload['custom_post_params'],
                 "session_id" => $payload['session_id'],
+                "user_email" => $payload['user_email'],
             ]);
         } else {
 
@@ -94,6 +95,7 @@ class RegisterPageViewEvent implements ShouldQueue {
                 "custom_get_params" => $payload['custom_get_params'],
                 "custom_post_params" => $payload['custom_post_params'],
                 "session_id" => $payload['session_id'],
+                "user_email" => $payload['user_email'],
             ]);
         }
     }

@@ -30,6 +30,7 @@ class TrackedEvents extends Model {
         'custom_get_params',
         'custom_post_params',
         'session_id',
+        'user_email'
     ];
 
     protected static function boot() {
