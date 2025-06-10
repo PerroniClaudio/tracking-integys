@@ -68,10 +68,20 @@
                         </div>
                     </a>
                 </li>
-                <li class="hidden">
-                    <a href="{{ route('private-area-users') }}">
+
+                <li>
+                    <a href="{{ route('user-activity') }}">
                         <div class="flex items-center">
                             <x-lucide-users class="h-6 w-6 text-primary" />
+                            <span class="ml-2">{{ __('navbar.user_activity') }}</span>
+                        </div>
+                    </a>
+                </li>
+
+                <li class="">
+                    <a href="{{ route('private-area-users') }}">
+                        <div class="flex items-center">
+                            <x-lucide-user-round-check class="h-6 w-6 text-primary" />
                             <span class="ml-2">{{ __('navbar.private_area_users') }}</span>
                         </div>
                     </a>

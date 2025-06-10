@@ -1232,6 +1232,55 @@ class TrackedEventsController extends Controller {
         return $unique_url_event;
     }
 
+    /** Attività utente */
+
+    public function userActivity(Request $request) {
+        $users = TrackedEvents::where('user_email', '!=', null)->distinct()->get();
+
+        return view('user-activity', [
+            'users' => $users,
+        ]);
+    }
+
+    public function userActivityLog(Request $request, $user_email) {
+
+        $events = TrackedEvents::where('user_email', $user_email)
+            ->orderBy('created_at', 'desc')
+            ->get()
+            ->groupBy('session_id');
+
+        return view('user-activity-log', [
+            'events' => $events,
+            'user_email' => $user_email,
+        ]);
+    }
+
+    public function searchUserActivity(Request $request) {
+
+        $needle = $request->input('search');
+
+        $users = TrackedEvents::select('user_email')
+            ->where('user_email', 'like', '%' . $needle . '%')
+            ->distinct()
+            ->get()
+            ->map(function ($user) {
+                $domains = TrackedEvents::where('user_email', $user->user_email)
+                    ->distinct()
+                    ->pluck('url')
+                    ->map(function ($url) {
+                        return parse_url($url, PHP_URL_HOST);
+                    })
+                    ->unique();
+
+                return [
+                    'email' => $user->user_email,
+                    'domains' => $domains->values()
+                ];
+            });
+
+        return response()->json($users);
+    }
+
     public function test() {
         $uniqueUsersCount = TrackedEvents::where('created_at', '>=', Carbon::now()->startOfMonth()->subMonths(6))
             ->where('created_at', '<=', Carbon::now()->endOfMonth())

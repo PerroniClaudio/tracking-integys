@@ -15,6 +15,9 @@ Route::get('/contact-form-request/{id}', [ContactFormRequestController::class, '
 Route::get('/private-area-users', [TrackedEventsController::class, 'privateAreaUsers'])->middleware(['auth'])->name('private-area-users');
 Route::get('/article-visits', [TrackedEventsController::class, 'articleVisits'])->middleware(['auth'])->name('article-visits');
 Route::get('/article-visits/{url}', [TrackedEventsController::class, 'articleVisit'])->middleware(['auth'])->name('article-visit.view');
+Route::get('/user-activity', [TrackedEventsController::class, 'userActivity'])->middleware(['auth'])->name('user-activity');
+Route::get('/user-activity-log/{user_email}', [TrackedEventsController::class, 'userActivityLog'])->middleware(['auth'])->name('user-activity-log');
+Route::get('/search-user-activity', [TrackedEventsController::class, 'searchUserActivity'])->middleware(['auth'])->name('search-user-activity');
 Route::get('/test', [TrackedEventsController::class, 'test']);
 
 Route::group([
@@ -29,6 +32,8 @@ Route::group([
     Route::get('/devices', [TrackedEventsController::class, 'devices'])->name('stats.devices');
     Route::get('/provenance', [TrackedEventsController::class, 'provenance'])->name('stats.provenance');
 });
+
+
 
 require __DIR__ . '/auth.php';
 require __DIR__ . '/webhook.php';

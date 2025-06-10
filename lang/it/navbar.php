@@ -8,4 +8,5 @@ return [
     "private_area_users" => "Utenti area riservata",
     "article_visits" => "Visite agli articoli",
     "article_visit" => "Visite all'articolo",
+    "user_activity" => "Attività utente",
 ];
