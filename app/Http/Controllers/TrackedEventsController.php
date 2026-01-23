@@ -104,7 +104,6 @@ class TrackedEventsController extends Controller {
                 $domain_list[] = $domain->domain();
             }
         }
-
         return view('website-visits', [
             'domain' => $request->domain ?? $domain_list[0],
             'domain_list' => $domain_list,
