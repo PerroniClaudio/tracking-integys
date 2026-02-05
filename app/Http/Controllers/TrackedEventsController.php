@@ -198,6 +198,7 @@ class TrackedEventsController extends Controller {
                 "PAGE_VIEW",
                 "ARTICLE_VIEW"
             ])
+            ->where('url', 'not like', '%/studio/%')
             ->get();
 
         return $events->count();
@@ -210,6 +211,7 @@ class TrackedEventsController extends Controller {
                 "PAGE_VIEW",
                 "ARTICLE_VIEW"
             ])
+            ->where('url', 'not like', '%/studio/%')
             ->get();
 
         $uniqueUsers = $events->unique(function ($item) {
@@ -227,6 +229,7 @@ class TrackedEventsController extends Controller {
                 "PAGE_VIEW",
                 "ARTICLE_VIEW"
             ])
+            ->where('url', 'not like', '%/studio/%')
             ->get();
 
         $total_page_views = $events->count();
@@ -236,6 +239,7 @@ class TrackedEventsController extends Controller {
                 "PAGE_VIEW",
                 "ARTICLE_VIEW"
             ])
+            ->where('url', 'not like', '%/studio/%')
             ->distinct('ip_address', 'session_id')
             ->get()
             ->count();
@@ -281,6 +285,7 @@ class TrackedEventsController extends Controller {
                     ->where('created_at', '<=', Carbon::now()->endOfDay())
                     ->whereIn('event_code', $event_codes)
                     ->where('url', 'like', '%' . $domain . '%')
+                    ->where('url', 'not like', '%/studio/%')
                     ->orderBy('created_at')
                     ->get();
 
@@ -300,6 +305,7 @@ class TrackedEventsController extends Controller {
                     ->where('created_at', '<=', Carbon::now()->endOfWeek())
                     ->whereIn('event_code', $event_codes)
                     ->where('url', 'like', '%' . $domain . '%')
+                    ->where('url', 'not like', '%/studio/%')
                     ->orderBy('created_at')
                     ->get();
 
@@ -319,6 +325,7 @@ class TrackedEventsController extends Controller {
                     ->where('created_at', '<=', Carbon::now()->endOfMonth())
                     ->whereIn('event_code', $event_codes)
                     ->where('url', 'like', '%' . $domain . '%')
+                    ->where('url', 'not like', '%/studio/%')
                     ->orderBy('created_at')
                     ->get();
 
@@ -338,6 +345,7 @@ class TrackedEventsController extends Controller {
                     ->where('created_at', '<=', Carbon::now()->endOfMonth())
                     ->whereIn('event_code', $event_codes)
                     ->where('url', 'like', '%' . $domain . '%')
+                    ->where('url', 'not like', '%/studio/%')
                     ->orderBy('created_at')
                     ->get();
 
@@ -357,6 +365,7 @@ class TrackedEventsController extends Controller {
                     ->where('created_at', '<=', Carbon::now()->endOfYear())
                     ->whereIn('event_code', $event_codes)
                     ->where('url', 'like', '%' . $domain . '%')
+                    ->where('url', 'not like', '%/studio/%')
                     ->orderBy('created_at')
                     ->get();
 
@@ -379,6 +388,7 @@ class TrackedEventsController extends Controller {
                     ->where('created_at', '<=', $request->end_date)
                     ->whereIn('event_code', $event_codes)
                     ->where('url', 'like', '%' . $domain . '%')
+                    ->where('url', 'not like', '%/studio/%')
                     ->orderBy('created_at')
                     ->get();
 
@@ -488,6 +498,7 @@ class TrackedEventsController extends Controller {
                 "ARTICLE_VIEW"
             ])
             ->where('url', 'like', '%' . $domain . '%')
+            ->where('url', 'not like', '%/studio/%')
             ->get();
 
         $uniqueUsers = $events->unique(function ($item) {
@@ -552,6 +563,7 @@ class TrackedEventsController extends Controller {
                         "ARTICLE_VIEW"
                     ])
                     ->where('url', 'like', '%' . $domain . '%')
+                    ->where('url', 'not like', '%/studio/%')
                     ->orderBy('created_at')
                     ->get();
 
@@ -572,6 +584,7 @@ class TrackedEventsController extends Controller {
                         "ARTICLE_VIEW"
                     ])
                     ->where('url', 'like', '%' . $domain . '%')
+                    ->where('url', 'not like', '%/studio/%')
                     ->orderBy('created_at')
                     ->get();
 
@@ -592,6 +605,7 @@ class TrackedEventsController extends Controller {
                         "ARTICLE_VIEW"
                     ])
                     ->where('url', 'like', '%' . $domain . '%')
+                    ->where('url', 'not like', '%/studio/%')
                     ->orderBy('created_at')
                     ->get();
 
@@ -612,6 +626,7 @@ class TrackedEventsController extends Controller {
                         "ARTICLE_VIEW"
                     ])
                     ->where('url', 'like', '%' . $domain . '%')
+                    ->where('url', 'not like', '%/studio/%')
                     ->orderBy('created_at')
                     ->get();
 
@@ -632,6 +647,7 @@ class TrackedEventsController extends Controller {
                         "ARTICLE_VIEW"
                     ])
                     ->where('url', 'like', '%' . $domain . '%')
+                    ->where('url', 'not like', '%/studio/%')
                     ->orderBy('created_at')
                     ->get();
 
@@ -652,6 +668,7 @@ class TrackedEventsController extends Controller {
                         "ARTICLE_VIEW"
                     ])
                     ->where('url', 'like', '%' . $domain . '%')
+                    ->where('url', 'not like', '%/studio/%')
                     ->orderBy('created_at')
                     ->get();
 
@@ -690,6 +707,7 @@ class TrackedEventsController extends Controller {
                         "ARTICLE_VIEW"
                     ])
                     ->where('url', 'like', '%' . $domain . '%')
+                    ->where('url', 'not like', '%/studio/%')
                     ->orderBy('created_at')
                     ->get();
 
@@ -710,6 +728,7 @@ class TrackedEventsController extends Controller {
                         "ARTICLE_VIEW"
                     ])
                     ->where('url', 'like', '%' . $domain . '%')
+                    ->where('url', 'not like', '%/studio/%')
                     ->orderBy('created_at')
                     ->get();
 
@@ -730,6 +749,7 @@ class TrackedEventsController extends Controller {
                         "ARTICLE_VIEW"
                     ])
                     ->where('url', 'like', '%' . $domain . '%')
+                    ->where('url', 'not like', '%/studio/%')
                     ->orderBy('created_at')
                     ->get();
 
@@ -750,6 +770,7 @@ class TrackedEventsController extends Controller {
                         "ARTICLE_VIEW"
                     ])
                     ->where('url', 'like', '%' . $domain . '%')
+                    ->where('url', 'not like', '%/studio/%')
                     ->orderBy('created_at')
                     ->get();
 
@@ -772,6 +793,7 @@ class TrackedEventsController extends Controller {
                         "ARTICLE_VIEW"
                     ])
                     ->where('url', 'like', '%' . $domain . '%')
+                    ->where('url', 'not like', '%/studio/%')
                     ->orderBy('created_at')
                     ->get();
 
@@ -792,6 +814,7 @@ class TrackedEventsController extends Controller {
                         "ARTICLE_VIEW"
                     ])
                     ->where('url', 'like', '%' . $domain . '%')
+                    ->where('url', 'not like', '%/studio/%')
                     ->orderBy('created_at')
                     ->get();
 
@@ -865,6 +888,7 @@ class TrackedEventsController extends Controller {
         $totalVisits = TrackedEvents::where('created_at', '>=', $start_date)
             ->where('created_at', '<=', $end_date)
             ->where('url', 'like', '%' . $domain . '%')
+            ->where('url', 'not like', '%/studio/%')
             ->get()
             ->groupBy(function ($date) use ($groupByFormat) {
                 return Carbon::parse($date->created_at)->format($groupByFormat);
@@ -874,6 +898,7 @@ class TrackedEventsController extends Controller {
         $bounceVisits = TrackedEvents::where('created_at', '>=', $start_date)
             ->where('created_at', '<=', $end_date)
             ->where('url', 'like', '%' . $domain . '%')
+            ->where('url', 'not like', '%/studio/%')
             ->get()
             ->groupBy(function ($date) use ($groupByFormat) {
                 return Carbon::parse($date->created_at)->format($groupByFormat);
@@ -918,6 +943,7 @@ class TrackedEventsController extends Controller {
                         "ARTICLE_VIEW"
                     ])
                     ->where('url', 'like', '%' . $domain . '%')
+                    ->where('url', 'not like', '%/studio/%')
                     ->orderBy('created_at')
                     ->get();
 
@@ -931,6 +957,7 @@ class TrackedEventsController extends Controller {
                         "ARTICLE_VIEW"
                     ])
                     ->where('url', 'like', '%' . $domain . '%')
+                    ->where('url', 'not like', '%/studio/%')
                     ->orderBy('created_at')
                     ->get();
 
@@ -946,6 +973,7 @@ class TrackedEventsController extends Controller {
                         "ARTICLE_VIEW"
                     ])
                     ->where('url', 'like', '%' . $domain . '%')
+                    ->where('url', 'not like', '%/studio/%')
                     ->orderBy('created_at')
                     ->get();
 
@@ -961,6 +989,7 @@ class TrackedEventsController extends Controller {
                         "ARTICLE_VIEW"
                     ])
                     ->where('url', 'like', '%' . $domain . '%')
+                    ->where('url', 'not like', '%/studio/%')
                     ->orderBy('created_at')
                     ->get();
 
@@ -975,6 +1004,7 @@ class TrackedEventsController extends Controller {
                         "ARTICLE_VIEW"
                     ])
                     ->where('url', 'like', '%' . $domain . '%')
+                    ->where('url', 'not like', '%/studio/%')
                     ->orderBy('created_at')
                     ->get();
 
@@ -988,6 +1018,7 @@ class TrackedEventsController extends Controller {
                         "ARTICLE_VIEW"
                     ])
                     ->where('url', 'like', '%' . $domain . '%')
+                    ->where('url', 'not like', '%/studio/%')
                     ->orderBy('created_at')
                     ->get();
 
@@ -1082,6 +1113,7 @@ class TrackedEventsController extends Controller {
                         "ARTICLE_VIEW"
                     ])
                     ->where('url', 'like', '%' . $domain . '%')
+                    ->where('url', 'not like', '%/studio/%')
                     ->orderBy('created_at')
                     ->get();
 
@@ -1095,6 +1127,7 @@ class TrackedEventsController extends Controller {
                         "ARTICLE_VIEW"
                     ])
                     ->where('url', 'like', '%' . $domain . '%')
+                    ->where('url', 'not like', '%/studio/%')
                     ->orderBy('created_at')
                     ->get();
 
@@ -1110,6 +1143,7 @@ class TrackedEventsController extends Controller {
                         "ARTICLE_VIEW"
                     ])
                     ->where('url', 'like', '%' . $domain . '%')
+                    ->where('url', 'not like', '%/studio/%')
                     ->orderBy('created_at')
                     ->get();
 
@@ -1125,6 +1159,7 @@ class TrackedEventsController extends Controller {
                         "ARTICLE_VIEW"
                     ])
                     ->where('url', 'like', '%' . $domain . '%')
+                    ->where('url', 'not like', '%/studio/%')
                     ->orderBy('created_at')
                     ->get();
 
@@ -1139,6 +1174,7 @@ class TrackedEventsController extends Controller {
                         "ARTICLE_VIEW"
                     ])
                     ->where('url', 'like', '%' . $domain . '%')
+                    ->where('url', 'not like', '%/studio/%')
                     ->orderBy('created_at')
                     ->get();
 
@@ -1152,6 +1188,7 @@ class TrackedEventsController extends Controller {
                         "ARTICLE_VIEW"
                     ])
                     ->where('url', 'like', '%' . $domain . '%')
+                    ->where('url', 'not like', '%/studio/%')
                     ->orderBy('created_at')
                     ->get();
 
@@ -1225,6 +1262,7 @@ class TrackedEventsController extends Controller {
                 "ARTICLE_VIEW"
             ])
             ->where('url', 'like', '%' . $domain . '%')
+            ->where('url', 'not like', '%/studio/%')
             ->groupBy('url')
             ->paginate(10);
 
